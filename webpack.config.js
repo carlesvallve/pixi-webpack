@@ -4,11 +4,11 @@ var path = require('path');
 module.exports = {
     entry: ['babel-polyfill', './src/main.js'],
     output: {
-        filename: "./build/bundle.js",
+        filename: "bundle.js",
+        path: path.resolve(__dirname, 'build/')
     },
 
     devServer: {
-      inline: true,
       contentBase: './build',
       port: 3333,
 
@@ -25,18 +25,18 @@ module.exports = {
     },
 
     // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
+    //devtool: "source-map",
 
     resolve: {
-        // Add '.ts' as resolvable extensions.
-        extensions: ["", ".ts", ".js"]
+        // Add resolvable extensions.
+        extensions: ["", ".js"]
     },
 
     module: {
-        preLoaders: [
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { test: /\.js$/, loader: "source-map-loader" }
-        ],
+        // preLoaders: [
+        //     // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+        //     { test: /\.js$/, loader: "source-map-loader" }
+        // ],
 
         loaders: [
           {
@@ -54,16 +54,11 @@ module.exports = {
           }
         ],
 
-        // loaders: [
-        //     // All files with a '.ts' extension will be handled by 'ts-loader'.
-        //     { test: /\.ts$/, loader: "ts-loader" },
-        // ],
-
         // Pixi expects people to be using Browserify. We're not, but we still can use
         // its brfs module to deal with pixi code using "fs".
-        postLoaders: [
-          { include: path.resolve(__dirname, "node_modules/pixi.js"), loader: "babel" } // loader: "transform?brfs"
-        ]
+        // postLoaders: [
+        //   { include: path.resolve(__dirname, "node_modules/pixi.js"), loader: "babel" } // loader: "transform?brfs"
+        // ]
     },
 
     externals: [
