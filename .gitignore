@@ -2,6 +2,7 @@ node_modules
 .DS_Store
 
 build/externals/pixi.min.js
+build/bundle.js.map
 build/bundle.js
 build/styles.css
 
