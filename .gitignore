@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+
+build/externals/pixi.min.js
+build/bundle.js
+build/styles.css
+
+build/assets/lite/json/lang/en.js
+npm-debug.log
