@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+//import audio from 'pixi-audio.js'
 import { setRenderer, setStage, setBunny } from './modules/renderer.js'
 import { randomInt } from './modules/utils.js'
 
@@ -24,7 +25,7 @@ const bunny = setBunny(stage)
     new PIXI.Rectangle(40, 40, 40, 40)
   ]
 
-
+  console.log(PIXI.audioManager)
 
   const width = 7
   const height = 7
@@ -45,7 +46,7 @@ const bunny = setBunny(stage)
 
       //tempTexture.frame = rects[r]
 
-      console.log(x, y, '->', tempTexture.frame)
+      //console.log(x, y, '->', tempTexture.frame)
 
       //Create the sprite from the texture
       var tile = new PIXI.Sprite(tempTexture);
