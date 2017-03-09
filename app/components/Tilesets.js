@@ -1,7 +1,5 @@
 export const Tilesets = (cb = null) => {
 
-  const sprites = {}
-
   // pixi exposes a premade instance for you to use.
   const loader = PIXI.loader;
 
@@ -42,13 +40,8 @@ export const Tilesets = (cb = null) => {
       // sprites.playerBlue = generatePlayerSprite('blue')
       // sprites.playerRed = generatePlayerSprite('red')
       // sprites.playerShadow = generatePlayerSprite('shadow')
-      cb(sprites)
+      cb()
   });
-
-
-
-
-
 
 }
 

@@ -1,6 +1,6 @@
 import { Directions } from './enums'
 
-export class Player extends PIXI.Container {
+export class Player2 extends PIXI.Container {
 
   constructor(color) {
     super()

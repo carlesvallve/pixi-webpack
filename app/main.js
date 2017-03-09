@@ -1,22 +1,12 @@
 //import * as PIXI from 'pixi.js';
 import pubsub from 'pubsub-js'
-import Bunny from './components/Bunny'
-import HexGrid from './components/HexGrid'
+import App from './components/App'
 
-//import { setupMap, drawMap } from './utils/hex/hex'
-
-var renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x1099bb});
+const renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x666666})
+const stage = new PIXI.Container()
 document.body.appendChild(renderer.view);
 
-const stage = new PIXI.Container();
-
-//const bunny = Bunny(stage)
-const grid = HexGrid(stage)
-
-renderer.render(stage);
-
-//const map = setupMap()
-//drawMap(map)
+const app = stage.addChild(new App({renderer}))
 
 animate();
 
