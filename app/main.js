@@ -1,25 +1,27 @@
-import * as PIXI from 'pixi.js';
+//import * as PIXI from 'pixi.js';
+import pubsub from 'pubsub-js'
+import Bunny from './components/Bunny'
+import HexGrid from './components/HexGrid'
 
-var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0x1099bb});
+//import { setupMap, drawMap } from './utils/hex/hex'
+
+var renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x1099bb});
 document.body.appendChild(renderer.view);
 
-console.log('loading bunny...')
+const stage = new PIXI.Container();
 
-var stage = new PIXI.Container();
-var texture = PIXI.Texture.fromImage('assets/img/bunny.png');
-var bunny = new PIXI.Sprite(texture);
-bunny.anchor.x = 0.5;
-bunny.anchor.y = 0.5;
-bunny.position.x = 400;
-bunny.position.y = 300;
-bunny.scale.x = 2;
-bunny.scale.y = 2;
-stage.addChild(bunny);
+//const bunny = Bunny(stage)
+const grid = HexGrid(stage)
+
+renderer.render(stage);
+
+//const map = setupMap()
+//drawMap(map)
+
 animate();
 
 function animate() {
-    requestAnimationFrame(animate);
-    var bunny = stage.getChildAt(0);
-    bunny.rotation += 0.01;
+    pubsub.publish('render', { /* pass any params you wish */ });
     renderer.render(stage);
+    requestAnimationFrame(animate);
 }
