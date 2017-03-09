@@ -40,18 +40,22 @@ export class Player extends PIXI.Container {
     anim.anchor.set(0.5)
     anim.animationSpeed = 0.25
     anim.loop = true
-    //anim.tint = 0x66ff66
-    //anim.loop
+    anim.tint = 0x66ff66
+    anim.loop = true
     //anim.currentFrame
     //onComplete = () => {}
     //onFrameChange= () => {}
-    //anim.play(
+    anim.play()
     //anim.stop(
     //anim.gotoAndPlay(frameNum)
     //anim.gotoAndStop(frameNum)
 
     //container.animations[direction] = anim
     //container.addChild(anim);
+
+    console.log(anim)
+
+    this.addChild(anim)
 
     return anim //container
   }
