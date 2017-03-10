@@ -2,7 +2,7 @@
 import pubsub from 'pubsub-js'
 import App from './components/App'
 
-const renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x666666})
+const renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0xeeeeee})
 const stage = new PIXI.Container()
 document.body.appendChild(renderer.view);
 
