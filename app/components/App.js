@@ -3,6 +3,7 @@ import { rectangle }      from './utils'
 import { keyboard }       from './Keyboard.js'
 import { Directions }     from './enums'
 import Tilesets           from './Tilesets'
+import Stadium             from './Stadium'
 import Player             from './Player'
 
 
@@ -28,8 +29,14 @@ export class App extends PIXI.Container {
 
   init(sprites) {
       console.log('received callback in main after all tilesets loaded', this)
+      // get center of screen
       const x = parseInt(this.props.renderer.width / 2)
       const y = parseInt(this.props.renderer.height / 2)
+
+      // create stadium
+      this.stadium = this.addChild(new Stadium({ x, y }))
+
+      // create player
       this.player = this.addChild(new Player({ color: 'red', x, y }))
   }
 
