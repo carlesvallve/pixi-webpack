@@ -8,3 +8,8 @@ export const Directions = {
   W:  'W',
   NW: 'NW'
 }
+
+export const Actions = {
+  idle: 'idle',
+  run: 'run'
+}

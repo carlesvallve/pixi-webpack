@@ -7,7 +7,7 @@ const center = { x: width / 2, y: height / 2 }
 
 export const setRenderer = () => {
   let renderer = PIXI.autoDetectRenderer(320, 240,
-    {backgroundColor: 0x222222, transparent: false, antialias: false, resolution: 1}
+    {backgroundColor: 0x666666, transparent: false, antialias: false, resolution: 1}
   )
 
   renderer.view.style.position = "absolute"
