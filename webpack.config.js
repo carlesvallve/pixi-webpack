@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-    entry: ['babel-polyfill', './src/main.js'],
+    entry: ['babel-polyfill', './app/main.js'],
     output: {
         filename: "bundle.js",
         path: path.resolve(__dirname, 'build/')
@@ -18,7 +18,7 @@ module.exports = {
 			historyApiFallback: true,
 			hot: true,
 			inline: true,
-			progress: true,
+			//progress: true,
 
       // display only errors to reduce the amount of output
       stats: 'errors-only',
@@ -29,7 +29,7 @@ module.exports = {
 
     resolve: {
         // Add resolvable extensions.
-        extensions: ["", ".js"]
+        extensions: [".js"]
     },
 
     module: {
@@ -42,7 +42,7 @@ module.exports = {
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel'
+            loader: 'babel-loader'
           },
           {
             test: /\.scss$/,
