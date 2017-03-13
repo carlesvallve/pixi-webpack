@@ -16,8 +16,8 @@ export class Stadium extends PIXI.Container {
     sprite.anchor.y = 0.5475;
     sprite.position.x = 0;
     sprite.position.y = 0;
-    sprite.scale.x = 0.5;
-    sprite.scale.y = 0.5;
+    sprite.scale.x = 1;
+    sprite.scale.y = 1;
     this.addChild(sprite);
   }
 

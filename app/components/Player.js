@@ -11,12 +11,19 @@ export class Player extends PIXI.Container {
     this.y = props.y
     this.color = props.color
     this.direction = Directions.S
-
+    this.inc = { x: 0, y: 0 }
+    this.speed = 1 + Math.random() * 2
     this.state = { action: Actions.run }
 
-    console.log('Player', this)
+    this.sfx = {
+      step: PIXI.sound.Sound.from('/assets/audio/sfx/step/step.wav')
+    }
+    //sound.volume = 0.25
+    //sound.loop = true
+    //sound.play()
 
     this.shadow = this.addChild(this.setAnimations('shadow'))
+    this.shadow .alpha = 0.8
     this.sprite = this.addChild(this.setAnimations(this.color))
   }
 
@@ -41,6 +48,7 @@ export class Player extends PIXI.Container {
 
 
     container.animation = animation
+
     return container
   }
 
@@ -48,9 +56,10 @@ export class Player extends PIXI.Container {
     const anim = new PIXI.extras.AnimatedSprite(frames)
     anim.anchor.set(0.5)
     anim.position.set(0, 0)
-    anim.animationSpeed = 0.25
+    anim.animationSpeed = 0.225 * this.speed //0.225
     anim.loop = true
     anim.visible = false
+    //anim.alpha = 0.1
     anim.play()
     anim.stop()
     //anim.tint = 0x66ff66
@@ -61,16 +70,7 @@ export class Player extends PIXI.Container {
     //anim.stop()
     //anim.gotoAndPlay(frameNum)
     //anim.gotoAndStop(frameNum)
-
-
     return anim
-  }
-
-  move(direction) {
-    this.direction = direction
-    this.state.action = Actions.run
-    this.updateAnimation(this.shadow, this.direction)
-    this.updateAnimation(this.sprite, this.direction)
   }
 
 
@@ -78,28 +78,81 @@ export class Player extends PIXI.Container {
     this.state.action = Actions.idle
     this.updateAnimation(this.shadow, this.direction)
     this.updateAnimation(this.sprite, this.direction)
+
+    this.inc = { x: 0, y: 0 }
+
+    if (this.lastFrame !== 0) {
+      this.playStepSound()
+      this.lastFrame = 0
+    }
+
   }
 
-  updateAnimation(sprite, direction) {
-    for (var key in sprite.animation) {
-      if (key === direction) {
-        // show and play current animation
-        sprite.animation[key].visible = true
-        if (this.state.action === Actions.idle) {
-          sprite.animation[key].gotoAndStop(0)
-        } else {
-          sprite.animation[key].play()
-        }
-      } else {
-        // hide and stop other animations
-        sprite.animation[key].visible = false
-        sprite.animation[key].gotoAndStop(0)
+
+  move(direction) {
+    this.direction = direction
+    this.state.action = Actions.run
+
+    this.updateAnimation(this.shadow, this.direction)
+    this.updateAnimation(this.sprite, this.direction)
+
+    this.inc = this.getIncrements(this.direction)
+  }
+
+
+  getIncrements(direction) {
+    switch(direction){
+      case Directions.N:  return { x: 0, y: -1 }
+      case Directions.E:  return { x: 1, y: 0 }
+      case Directions.S:  return { x: 0, y: 1 }
+      case Directions.W:  return { x: -1, y: 0 }
+
+      case Directions.NE: return { x: 1, y: -1 }
+      case Directions.SE: return { x: 1, y: 1 }
+      case Directions.SW: return { x: -1, y: 1 }
+      case Directions.NW: return { x: -1, y: -1 }
+    }
+
+    return { x: 0, y: 0 }
+  }
+
+  setStep() {
+    const anim = this.sprite.animation[this.direction]
+    if (anim.currentFrame === 2 || anim.currentFrame === 6) {
+      if (this.lastFrame != anim.currentFrame) {
+        this.playStepSound()
+        this.lastFrame = anim.currentFrame
       }
+    } else {
+      this.position.set(this.x + this.inc.x * this.speed, this.y + this.inc.y * this.speed)
     }
   }
 
-  render() {
+  playStepSound() {
+    this.sfx.step.speed = 1.5 + Math.random() * 0.5
+    this.sfx.step.volume = 0.2 + Math.random() * 0.2
+    this.sfx.step.play()
   }
+
+
+  updateAnimation(sprite, direction) {
+    for (var key in sprite.animation) {
+      if (this.state.action === Actions.idle) {
+        sprite.animation[key].gotoAndStop(0)
+      } else {
+        sprite.animation[key].play()
+      }
+
+      sprite.animation[key].visible = key === direction
+    }
+  }
+
+
+  render() {
+
+    this.setStep()
+  }
+
 }
 
 export default Player

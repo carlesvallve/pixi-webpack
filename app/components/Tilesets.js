@@ -8,7 +8,7 @@ export const Tilesets = (cb = null) => {
   loader.add('playerBlue',   '/assets/img/simulation/player/player_blue/player_blue_data.json')
         .add('playerRed',    '/assets/img/simulation/player/player_red/player_red_data.json')
         .add('playerShadow', '/assets/img/simulation/player/player_shadow/player_shadow_data.json')
-  loader.add('stadium',      '/assets/img/simulation/stadium/stadium.jpg')
+  loader.add('stadium',      '/assets/img/simulation/stadium/stadium-optimized.jpg')
 
   // throughout the process multiple signals can be dispatched.
   loader.onProgress.add((loader, res) => { // called once per loaded/errored file
