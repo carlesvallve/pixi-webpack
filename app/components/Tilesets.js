@@ -26,22 +26,24 @@ export const Tilesets = (cb = null) => {
 
 
   loader.load((loader, res) => {
-    console.log(res)
-      // resources is an object where the key is the name of the resource loaded and the value is the resource object.
-      // They have a couple default properties:
-      // - `url`: The URL that the resource was loaded from
-      // - `error`: The error that happened when trying to load (if any)
-      // - `data`: The raw data that was loaded
-      // also may contain other properties based on the middleware that runs.
+    //console.log(res.music)
 
-      //sprites.bunny = new PIXI.TilingSprite(resources.bunny.texture);
-      //sprites.spaceship = new PIXI.TilingSprite(resources.spaceship.texture);
-      //sprites.scoreFont = new PIXI.TilingSprite(resources.scoreFont.texture);
+    // resources is an object where the key is the name of the resource loaded and the value is the resource object.
+    // They have a couple default properties:
+    // - `url`: The URL that the resource was loaded from
+    // - `error`: The error that happened when trying to load (if any)
+    // - `data`: The raw data that was loaded
+    // also may contain other properties based on the middleware that runs.
 
-      // sprites.playerBlue = generatePlayerSprite('blue')
-      // sprites.playerRed = generatePlayerSprite('red')
-      // sprites.playerShadow = generatePlayerSprite('shadow')
-      cb()
+    //sprites.bunny = new PIXI.TilingSprite(resources.bunny.texture);
+    //sprites.spaceship = new PIXI.TilingSprite(resources.spaceship.texture);
+    //sprites.scoreFont = new PIXI.TilingSprite(resources.scoreFont.texture);
+
+    // sprites.playerBlue = generatePlayerSprite('blue')
+    // sprites.playerRed = generatePlayerSprite('red')
+    // sprites.playerShadow = generatePlayerSprite('shadow')
+
+    cb()
   });
 
 }

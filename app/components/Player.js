@@ -14,13 +14,13 @@ export class Player extends PIXI.Container {
 
     this.state = { action: Actions.run }
 
-    console.log('Player', this.color, this.x, this.y)
+    console.log('Player', this)
 
-    this.shadow = this.addChild(this.setAnimation('shadow'))
-    this.sprite = this.addChild(this.setAnimation(this.color))
+    this.shadow = this.addChild(this.setAnimations('shadow'))
+    this.sprite = this.addChild(this.setAnimations(this.color))
   }
 
-  setAnimation(color) {
+  setAnimations(color) {
     // create an array of textures from an image path
     let frames = { N: [], NE:[], E:[], SE:[], S:[], SW:[], W:[], NW:[] }
     let animation = {}
@@ -31,36 +31,40 @@ export class Player extends PIXI.Container {
       for (let i = 1; i <= 8; i++) {
         //var val = i < 10 ? '0' + i : i;
         // magically works since the spritesheet was loaded with the pixi loader
-        frames[direction].push(PIXI.Texture.fromFrame('player_' + color + '_' + this.state.action + '_' + direction + '_' + i + '.png'));
-
-        const anim = new PIXI.extras.AnimatedSprite(frames[direction])
-        anim.anchor.set(0.5)
-        anim.position.set(0, 0)
-        anim.animationSpeed = 0.25
-        anim.loop = true
-        anim.visible = false //key === this.direction
-        anim.play()
-        anim.stop()
-        //anim.tint = 0x66ff66
-        //anim.loop
-        //anim.currentFrame
-        //onComplete = () => {}
-        //onFrameChange = () => {}
-        //anim.stop()
-        //anim.gotoAndPlay(frameNum)
-        //anim.gotoAndStop(frameNum)
-
-        container.addChild(anim);
-        animation[direction] = anim
+        frames[direction].push(PIXI.Texture.fromFrame(
+          'player_' + color + '_' + this.state.action + '_' + direction + '_' + i + '.png'
+        ))
+        animation[direction] = this.setAnimation(frames[direction])
+        container.addChild(animation[direction]);
       }
     }
 
-    container.animation = animation
-    //this.updateAnimation(animation, this.direction)
 
+    container.animation = animation
     return container
   }
 
+  setAnimation(frames) {
+    const anim = new PIXI.extras.AnimatedSprite(frames)
+    anim.anchor.set(0.5)
+    anim.position.set(0, 0)
+    anim.animationSpeed = 0.25
+    anim.loop = true
+    anim.visible = false
+    anim.play()
+    anim.stop()
+    //anim.tint = 0x66ff66
+    //anim.loop
+    //anim.currentFrame
+    //onComplete = () => {}
+    //onFrameChange = () => {}
+    //anim.stop()
+    //anim.gotoAndPlay(frameNum)
+    //anim.gotoAndStop(frameNum)
+
+
+    return anim
+  }
 
   move(direction) {
     this.direction = direction
@@ -95,8 +99,6 @@ export class Player extends PIXI.Container {
   }
 
   render() {
-    //this.updateAnimation(this.shadow, this.direction)
-    //this.updateAnimation(this.sprite, this.direction)
   }
 }
 
