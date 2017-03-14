@@ -19,7 +19,7 @@ export class Ball extends PIXI.Container {
     const anim = new PIXI.extras.AnimatedSprite([texture])
 
     anim.anchor.set(offset.x, offset.y)
-    anim.scale.set(0.3, 0.3)
+    anim.scale.set(0.5, 0.5)
     anim.position.set(0, 0)
     anim.animationSpeed = 0
     anim.loop = true

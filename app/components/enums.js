@@ -10,9 +10,10 @@ export const Directions = {
 }
 
 export const Actions = {
-  idle: 'idle', // no frames yet, should be 1
+  idle: 'idle', // 1 frame
   run: 'run', // 8 frames
-  falling: 'falling', // 3 frames
-  tacle: 'tacle', // 1 frame
-  throwin: 'throwin' // 3 frames
+  kick: 'kick',
+  fall: 'fall', // 3 frames
+  tackle: 'tackle', // 1 frame
+  throw: 'throw' // 3 frames
 }

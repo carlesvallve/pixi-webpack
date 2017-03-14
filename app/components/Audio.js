@@ -1,5 +1,8 @@
 import { randomInt } from './utils'
 
+// Settings
+const masterVolume = 1
+
 const Audio = {
 
   // Music
@@ -75,7 +78,7 @@ const Audio = {
   // Methods
 
   play: (sound, volume = 1, speed = 1, loop = false) => {
-    sound.volume = volume
+    sound.volume = volume * masterVolume
     sound.speed = speed
     sound.loop = loop
     sound.play()
@@ -83,7 +86,7 @@ const Audio = {
 
   playRandom: (soundType, volume = 1, speed = 1, loop = false) => {
     const sound = soundType[randomInt(0, soundType.length - 1)]
-    sound.volume = volume
+    sound.volume = volume * masterVolume
     sound.speed = speed
     sound.loop = loop
     sound.play()

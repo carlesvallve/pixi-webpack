@@ -1,5 +1,5 @@
 import pubsub from 'pubsub-js'
-
+import { rectangle } from './utils'
 
 export class Camera extends PIXI.Container {
 
@@ -7,72 +7,40 @@ export class Camera extends PIXI.Container {
     super()
     pubsub.subscribe('render', this.render.bind(this));
 
+    this.visible = false
+    this.elasticity = 10
+
     this.world = props.world
     this.target = props.target
     this.x = props.target.x
     this.y = props.target.y
+    this.w = this.world.width - this.world.center.x * 2
+    this.h = this.world.height - this.world.center.y * 2
+    this.offset = props.offset
 
-    this.shadow = this.addChild(this.setSprite('ball_shadow', 0.2, 0x000000));
-    this.sprite = this.addChild(this.setSprite('ball_shadow', 0.1, 0xff0000));
+    this.rectangle = this.addChild(rectangle(-4, -1, 8, 2, 0xffff00, 0x000000, 0));
+    this.rectangle = this.addChild(rectangle(-1, -4, 2, 8, 0xffff00, 0x000000, 0));
   }
 
-  setSprite(id, scale = 0.2, color = 0xffffff) {
-    const texture = PIXI.Texture.fromFrame(id + '_1.png')
-    const sprite = new PIXI.Sprite(texture)
-    sprite.anchor.set(0.5, 0.5)
-    sprite.scale.set(scale)
-    sprite.position.set(0, 0)
-    sprite.tint = color
-    return sprite
-  }
 
   render() {
     // get increments for this frame
-    const dx = this.target.x - this.x
-    const dy = this.target.y - this.y
+    const dx = (this.target.x - this.x) / this.elasticity
+    const dy = (this.target.y - this.y) / this.elasticity
 
-    //this.world.x -= dx
-    //this.world.y -= dy
-    // update camera position to target
+    // update camera position
     this.x += dx
     this.y += dy
 
-    //this.x = this.target.x
-    //this.y = this.target.y
-    console.log(this.world.w)
+    // bound to world limits
+    if (this.x < -this.w / 2) { this.x = -(this.w / 2) }
+    if (this.x > this.w / 2) { this.x = (this.w / 2) }
+    if (this.y < -this.h / 2 - this.offset.y) { this.y = -this.h / 2 - this.offset.y }
+    if (this.y > this.h / 2 - this.offset.y) { this.y = this.h / 2 - this.offset.y }
 
-    if (this.x < -this.world.w / 2) {
-      this.x = -(this.world.w / 2)
-    }
-
-    if (this.x > this.world.w / 2) {
-      this.x = (this.world.w / 2)
-    }
-
-    //console.log(this.x)
-
-    //this.world.position.set(this.world.center.x -this.x, this.world.center.y -this.y)
-
-
-    // update world
-    //const limit = this.world.updatePosition(dx, dy)
-    // if (this.world.x - this.world.center.x < - this.world.width / 2) {
-    //   console.log('<<<')
-    //   this.world.x = this.world.center.x - this.world.width / 2
-    // }
-    //
-    // if (this.world.x - this.world.center.x > this.world.width / 2) {
-    //   console.log('>>>')
-    //   this.world.x = this.world.center.x + this.world.width / 2
-    // }
-
-
-
-    // update camera position to target
-    this.x = this.target.x
-    this.y = this.target.y
-
-
+    // update world position
+    this.world.x = - this.x + this.world.center.x
+    this.world.y = - this.y + this.world.center.y
   }
 }
 

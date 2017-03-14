@@ -30,26 +30,22 @@ export class App extends PIXI.Container {
 
     // create world
     this.world = this.addChild(new World({ x, y }))
-    this.world.setDimensions(200, 200)
-    
+
     // create stadium
-    //this.stadium = this.world.addChild(new Stadium({ x: 0, y: 0 }))
+    this.stadium = this.world.addChild(new Stadium({ x: 0, y: 0 }))
 
     // create ball
     this.ball = this.world.addChild(new Ball({ x: 0, y: 0 }))
 
     // create player
-    this.player = this.world.addChild(new Player({ color: 'red', x: 0, y: -12 }))
+    this.player = this.world.addChild(new Player({
+      color: 'red', x: 0, y: -12
+    }))
 
     // create camera
-    this.camera = this.world.addChild(new Camera({ world: this.world, target: this.player }))
-
-    // sound test
-
-    Audio.playRandom(Audio.bgm.synth, 0.25, 0.75, true)
-    //Audio.playRandom(Audio.sfx.shout, 0.5, true)
-
-    console.log(this.world.width, this.world.height)
+    this.camera = this.world.addChild(new Camera({
+      world: this.world, target: this.player, offset: { x: 0, y: 83 }
+    }))
   }
 
 
