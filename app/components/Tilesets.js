@@ -5,10 +5,12 @@ export const Tilesets = (cb = null) => {
 
   // Chainable `add` to enqueue a resource
   //loader.add('scoreFont', 'assets/score.fnt');
-  loader.add('playerBlue',   '/assets/img/simulation/player/player_blue/player_blue_data.json')
-        .add('playerRed',    '/assets/img/simulation/player/player_red/player_red_data.json')
-        .add('playerShadow', '/assets/img/simulation/player/player_shadow/player_shadow_data.json')
-  loader.add('stadium',      '/assets/img/simulation/stadium/stadium-optimized.jpg')
+  loader.add('playerBlue',    '/assets/img/simulation/player/player_blue/player_blue_data.json')
+        .add('playerRed',     '/assets/img/simulation/player/player_red/player_red_data.json')
+        .add('playerShadow',  '/assets/img/simulation/player/player_shadow/player_shadow_data.json')
+  loader.add('ball',          '/assets/img/simulation/ball/ball_data.json')
+        .add('ballShadow',   '/assets/img/simulation/ball/ball_shadow_data.json')
+  loader.add('stadium',       '/assets/img/simulation/stadium/stadium-optimized.jpg')
 
   // throughout the process multiple signals can be dispatched.
   loader.onProgress.add((loader, res) => { // called once per loaded/errored file
@@ -24,9 +26,8 @@ export const Tilesets = (cb = null) => {
     //console.log('All files loaded', loader.progress + '%', res)
   })
 
-
   loader.load((loader, res) => {
-    //console.log(res.music)
+    //console.log(res)
 
     // resources is an object where the key is the name of the resource loaded and the value is the resource object.
     // They have a couple default properties:

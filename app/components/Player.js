@@ -1,5 +1,6 @@
 import pubsub             from 'pubsub-js'
 import { Directions, Actions }     from './enums'
+import Audio from './Audio'
 
 export class Player extends PIXI.Container {
 
@@ -15,12 +16,9 @@ export class Player extends PIXI.Container {
     this.speed = 1 + Math.random() * 2
     this.state = { action: Actions.run }
 
-    this.sfx = {
-      step: PIXI.sound.Sound.from('/assets/audio/sfx/step/step.wav')
-    }
-    //sound.volume = 0.25
-    //sound.loop = true
-    //sound.play()
+    // this.sfx = {
+    //   step: PIXI.sound.Sound.from('/assets/audio/sfx/step/step.wav')
+    // }
 
     this.shadow = this.addChild(this.setAnimations('shadow'))
     this.shadow .alpha = 0.8
@@ -46,7 +44,6 @@ export class Player extends PIXI.Container {
       }
     }
 
-
     container.animation = animation
 
     return container
@@ -54,14 +51,14 @@ export class Player extends PIXI.Container {
 
   setAnimation(frames) {
     const anim = new PIXI.extras.AnimatedSprite(frames)
-    anim.anchor.set(0.5)
+    anim.anchor.set(0.35, 0.5)
     anim.position.set(0, 0)
     anim.animationSpeed = 0.225 * this.speed //0.225
     anim.loop = true
     anim.visible = false
     //anim.alpha = 0.1
-    anim.play()
-    anim.stop()
+    //anim.play()
+    //anim.stop()
     //anim.tint = 0x66ff66
     //anim.loop
     //anim.currentFrame
@@ -116,6 +113,7 @@ export class Player extends PIXI.Container {
     return { x: 0, y: 0 }
   }
 
+
   setStep() {
     const anim = this.sprite.animation[this.direction]
     if (anim.currentFrame === 2 || anim.currentFrame === 6) {
@@ -124,14 +122,16 @@ export class Player extends PIXI.Container {
         this.lastFrame = anim.currentFrame
       }
     } else {
-      this.position.set(this.x + this.inc.x * this.speed, this.y + this.inc.y * this.speed)
+      //this.position.set(this.x + this.inc.x * this.speed, this.y + this.inc.y * this.speed)
     }
   }
 
+
   playStepSound() {
-    this.sfx.step.speed = 1.5 + Math.random() * 0.5
-    this.sfx.step.volume = 0.2 + Math.random() * 0.2
-    this.sfx.step.play()
+    Audio.play(Audio.sfx.step,
+      0.2 + Math.random() * 0.2, // volume
+      1.5 + Math.random() * 0.5  // speed
+    )
   }
 
 
@@ -149,7 +149,7 @@ export class Player extends PIXI.Container {
 
 
   render() {
-
+    this.position.set(this.x + this.inc.x * this.speed, this.y + this.inc.y * this.speed)
     this.setStep()
   }
 
