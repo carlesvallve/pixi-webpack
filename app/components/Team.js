@@ -48,12 +48,12 @@ export class Team {
 
     for (let i = 0; i < this.formation.length; i++) {
       this.players.push(
-        this.app.world.addChildAt(new Player({
+        this.app.elements.addChild(new Player({
           app: this.app,
           team: this,
           x: this.formation[i].x,
           y: this.baseY + this.formation[i].y * this.separationY
-        }), 3)
+        }))
       )
     }
   }

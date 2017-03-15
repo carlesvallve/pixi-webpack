@@ -39,6 +39,8 @@ export class App extends PIXI.Container {
     // create ball
     this.ball = this.world.addChild(new Ball({ app: this, x: 0, y: 0 }))
 
+    this.elements = this.world.addChild(new PIXI.Container())
+
     // create teams
     this.teams = [
       new Team({ app: this, side: Sides.N, color: 'red' }),
@@ -53,8 +55,8 @@ export class App extends PIXI.Container {
     // }))
 
     // create goals
-    this.goalN = this.world.addChild(new Goal({ side: Sides.N, x: 0, y: -342 }))
-    this.goalS = this.world.addChild(new Goal({ side: Sides.S, x: 0, y: 342 }))
+    this.goalN = this.elements.addChild(new Goal({ side: Sides.N, x: 0, y: -342 }))
+    this.goalS = this.elements.addChild(new Goal({ side: Sides.S, x: 0, y: 342 }))
 
     // create camera
     this.camera = this.world.addChild(new Camera({
@@ -72,6 +74,12 @@ export class App extends PIXI.Container {
       } else {
         this.player.move(dir)
       }
+    }
+
+    if (this.elements) {
+      this.elements.children.sort(function(a,b) { //Sort the fighters on the battlefield maybe
+        return a.position.y > b.position.y // && a.position.x > b.position.x;
+      })
     }
   }
 }

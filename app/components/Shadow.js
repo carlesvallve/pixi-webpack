@@ -48,6 +48,8 @@ export class Shadow extends PIXI.Container {
   //   return anim
   // }
 
+
+
   setAnimation(id, offset = { x: 0.5, y: 0.5 }) {
     const texture = PIXI.Texture.fromFrame(id + '_1.png')
     const anim = new PIXI.extras.AnimatedSprite([texture])

@@ -8,11 +8,11 @@ export class Stadium extends PIXI.Container {
 
     this.position.set(props.x, props.y)
 
-    const texture = PIXI.Texture.fromImage('stadium');
-    const sprite = new PIXI.Sprite(texture);
+    const texture = PIXI.Texture.fromImage('stadium')
+    const sprite = new PIXI.Sprite(texture)
     sprite.anchor.set(0.5, 0.5)
-    sprite.scale.set(1);
-    this.addChild(sprite);
+    sprite.scale.set(1)
+    this.addChild(sprite)
   }
 
   render() {
