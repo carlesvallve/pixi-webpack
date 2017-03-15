@@ -1,13 +1,15 @@
-import pubsub             from 'pubsub-js'
-import Keyboard           from './Keyboard.js'
-import Tilesets           from './Tilesets'
-import World              from './World'
-import Stadium            from './Stadium'
-import Goal               from './Goal'
-import Ball               from './Ball'
-import Player             from './Player'
-import Camera             from './Camera'
-import Audio              from './Audio'
+import pubsub    from 'pubsub-js'
+import Keyboard  from './Keyboard.js'
+import Tilesets  from './Tilesets'
+import World     from './World'
+import Stadium   from './Stadium'
+import Goal      from './Goal'
+import Ball      from './Ball'
+import Team      from './Team'
+import Player    from './Player'
+import Camera    from './Camera'
+import Audio     from './Audio'
+import { Sides } from './enums'
 
 
 export class App extends PIXI.Container {
@@ -35,16 +37,24 @@ export class App extends PIXI.Container {
     this.stadium = this.world.addChild(new Stadium({ x: 0, y: -83 }))
 
     // create ball
-    this.ball = this.world.addChild(new Ball({ x: 0, y: 0 }))
+    this.ball = this.world.addChild(new Ball({ app: this, x: 0, y: 0 }))
 
-    // create player
-    this.player = this.world.addChild(new Player({
-      color: 'red', x: 0, y: -12
-    }))
+    // create teams
+    this.teams = [
+      new Team({ app: this, side: Sides.N, color: 'red' }),
+      new Team({ app: this, side: Sides.S, color: 'blue' })
+    ]
+
+    // this.player = this.world.addChild(new Player({
+    //   app: this,
+    //   team: null,
+    //   x: 0,
+    //   y: -12
+    // }))
 
     // create goals
-    this.goalN = this.world.addChild(new Goal({ type: 'N', x: 0, y: -342 }))
-    this.goalS = this.world.addChild(new Goal({ type: 'S', x: 0, y: 342 }))
+    this.goalN = this.world.addChild(new Goal({ side: Sides.N, x: 0, y: -342 }))
+    this.goalS = this.world.addChild(new Goal({ side: Sides.S, x: 0, y: 342 }))
 
     // create camera
     this.camera = this.world.addChild(new Camera({

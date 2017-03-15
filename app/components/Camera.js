@@ -11,9 +11,9 @@ export class Camera extends PIXI.Container {
     this.elasticity = 10
 
     this.world = props.world
-    this.target = props.target
-    this.x = props.target.x
-    this.y = props.target.y
+    this.target = props.target || { x: 0, y: 0 }
+    this.x = this.target.x
+    this.y = this.target.y
     this.w = this.world.width - this.world.center.x * 2
     this.h = this.world.height - this.world.center.y * 2
     this.offset = props.offset

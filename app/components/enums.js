@@ -1,3 +1,8 @@
+export const Sides = {
+  N:  'N',
+  S: 'S'
+}
+
 export const Directions = {
   N:  'N',
   NE: 'NE',
@@ -7,6 +12,18 @@ export const Directions = {
   SW: 'SW',
   W:  'W',
   NW: 'NW'
+}
+
+export const DirectionVectors = {
+  N:  { x: 0,  y: -1 },
+  E:  { x: 1,  y: 0 },
+  S:  { x: 0,  y: 1 },
+  W:  { x: -1, y: 0 },
+
+  NE: { x: 0.8,  y: -.8 },
+  SE: { x: 0.8,  y: 0.8 },
+  SW: { x: -0.8, y: 0.8 },
+  NW: { x: -0.8, y: -0.8 }
 }
 
 export const Actions = {
