@@ -18,7 +18,6 @@ export class App extends PIXI.Container {
     this.props = props
 
     this.keyboard = new Keyboard()
-
     const tilesets = new Tilesets(this.init.bind(this))
   }
 
