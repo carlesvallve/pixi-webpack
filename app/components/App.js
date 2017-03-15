@@ -3,6 +3,7 @@ import Keyboard           from './Keyboard.js'
 import Tilesets           from './Tilesets'
 import World              from './World'
 import Stadium            from './Stadium'
+import Goal               from './Goal'
 import Ball               from './Ball'
 import Player             from './Player'
 import Camera             from './Camera'
@@ -31,7 +32,7 @@ export class App extends PIXI.Container {
     this.world = this.addChild(new World({ x, y }))
 
     // create stadium
-    this.stadium = this.world.addChild(new Stadium({ x: 0, y: 0 }))
+    this.stadium = this.world.addChild(new Stadium({ x: 0, y: -83 }))
 
     // create ball
     this.ball = this.world.addChild(new Ball({ x: 0, y: 0 }))
@@ -40,6 +41,10 @@ export class App extends PIXI.Container {
     this.player = this.world.addChild(new Player({
       color: 'red', x: 0, y: -12
     }))
+
+    // create goals
+    this.goalN = this.world.addChild(new Goal({ type: 'N', x: 0, y: -342 }))
+    this.goalS = this.world.addChild(new Goal({ type: 'S', x: 0, y: 342 }))
 
     // create camera
     this.camera = this.world.addChild(new Camera({

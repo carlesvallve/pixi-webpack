@@ -1,14 +1,13 @@
-import pubsub from 'pubsub-js'
+//import pubsub from 'pubsub-js'
 
 
 export class Ball extends PIXI.Container {
 
   constructor(props) {
     super()
-    pubsub.subscribe('render', this.render.bind(this));
+    //pubsub.subscribe('render', this.render.bind(this));
 
-    this.x = props.x
-    this.y = props.y
+    this.position.set(props.x, props.y)
 
     this.shadow = this.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));

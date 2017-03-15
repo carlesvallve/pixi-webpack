@@ -5,12 +5,18 @@ export const Tilesets = (cb = null) => {
 
   // Chainable `add` to enqueue a resource
   //loader.add('scoreFont', 'assets/score.fnt');
+
   loader.add('playerBlue',    '/assets/img/simulation/player/player_blue/player_blue_data.json')
         .add('playerRed',     '/assets/img/simulation/player/player_red/player_red_data.json')
         .add('playerShadow',  '/assets/img/simulation/player/player_shadow/player_shadow_data.json')
+
   loader.add('ball',          '/assets/img/simulation/ball/ball_data.json')
-        .add('ballShadow',   '/assets/img/simulation/ball/ball_shadow_data.json')
+        .add('ballShadow',    '/assets/img/simulation/ball/ball_shadow_data.json')
+
   loader.add('stadium',       '/assets/img/simulation/stadium/stadium-optimized.jpg')
+        .add('goalN',         '/assets/img/simulation/stadium/goal_up.png')
+        .add('goalS',         '/assets/img/simulation/stadium/goal_down.png')
+
 
   // throughout the process multiple signals can be dispatched.
   loader.onProgress.add((loader, res) => { // called once per loaded/errored file

@@ -1,21 +1,22 @@
-import pubsub             from 'pubsub-js'
-import { Directions, Actions }     from './enums'
-import Audio from './Audio'
+//import pubsub                  from 'pubsub-js'
+import Audio                   from './Audio'
+import { Directions, Actions } from './enums'
+
 
 export class Player extends PIXI.Container {
 
   constructor(props) {
     super()
-    pubsub.subscribe('render', this.render.bind(this));
+    //pubsub.subscribe('render', this.render.bind(this));
 
-    //this.scale.set(2, 2)
-    this.x = props.x
-    this.y = props.y
     this.color = props.color
     this.direction = Directions.S
     this.inc = { x: 0, y: 0 }
     this.speed = 2 + Math.random() * 1
     this.action = Actions.run
+
+    this.position.set(props.x, props.y)
+    this.scale.set(1)
 
     this.shadows = {
       idle: this.addChild(this.setAnimations('shadow', 'run', 1, 1)),
@@ -34,8 +35,6 @@ export class Player extends PIXI.Container {
       tackle: this.addChild(this.setAnimations(this.color, 'tacle', 1, 1)),
       throw: this.addChild(this.setAnimations(this.color, 'throwin', 1, 3))
     }
-
-    console.log(this.sprites)
   }
 
 
