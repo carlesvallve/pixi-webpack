@@ -1,6 +1,7 @@
 //import pubsub from 'pubsub-js'
 import Player from './Player'
 import { Sides } from './enums'
+import { getFormation, getRandomFormation } from './formations'
 
 export class Team {
 
@@ -13,46 +14,34 @@ export class Team {
 
     this.setFormation()
     this.createPlayers()
-    this.selectPlayer(0)
+    this.selectPlayer(this.players.length - 1)
+
+    console.log('Team', this.color, this.formation.id)
   }
 
-  setFormation() {
+
+  setFormation(id = null) {
     this.direction = this.side === Sides.N ? 1 : -1
     this.baseY = 318 * this.direction
     this.separationY = 1.1
-    const dy = 30 * -this.direction
-
-
-
-    // 4-3-3
-    this.formation = [
-      { x: 0,    y: 0 },       // GK
-
-      { x: -180, y: dy * 3 },  // RD
-      { x: -70,  y: dy * 2 },  // CDR
-      { x: 70,   y: dy * 2 },  // CDL
-      { x: 180,  y: dy * 3 },  // LD
-
-      { x: -80,  y: dy * 6 },  // MCR
-      { x: 0,    y: dy * 4 },  // MCD
-      { x: 80,   y: dy * 6 },  // MCL
-
-      { x: -150, y: dy * 8  }, // FWR
-      { x: 0,    y: dy * 9  }, // FWC
-      { x: 150,  y: dy * 8  }, // FWL
-    ]
+    if (id === null) {
+      this.formation = getRandomFormation(this.direction)
+    } else {
+      this.formation = getFormation(id, this.direction)
+    }
   }
+
 
   createPlayers() {
     this.players = []
 
-    for (let i = 0; i < this.formation.length; i++) {
+    for (let i = 0; i < this.formation.positions.length; i++) {
       this.players.push(
-        this.app.elements.addChild(new Player({
+        this.app.world.foreground.addChild(new Player({
           app: this.app,
           team: this,
-          x: this.formation[i].x,
-          y: this.baseY + this.formation[i].y * this.separationY
+          x: this.formation.positions[i].x,
+          y: this.baseY + this.formation.positions[i].y * this.separationY
         }))
       )
     }
@@ -60,6 +49,10 @@ export class Team {
 
   selectPlayer(num) {
      this.app.player = this.players[num]
+
+     if (this.app.camera) {
+       this.app.camera.setTarget(this.app.player)
+     }
   }
 
   selectNextPlayer() {

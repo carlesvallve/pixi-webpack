@@ -15,9 +15,7 @@ export class Stadium extends PIXI.Container {
     this.addChild(sprite)
   }
 
-  render() {
-
-  }
+  render() {}
 }
 
 export default Stadium

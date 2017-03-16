@@ -1,10 +1,11 @@
-import { Directions } from './enums'
+import { Actions, Directions } from './enums'
 
 export class Keyboard {
   constructor() {
 
     this.keys = {
-      up: false, down: false, left: false, right: false
+      up: false, down: false, left: false, right: false,
+      shoot: false
     }
 
     //Attach event listeners
@@ -18,6 +19,8 @@ export class Keyboard {
     if (e.keyCode === 38) { this.keys.up = true }
     if (e.keyCode === 39) { this.keys.right = true }
     if (e.keyCode === 40) { this.keys.down = true }
+
+    if (e.keyCode === 32) { this.keys.kick = true }
     e.preventDefault()
   }
 
@@ -27,6 +30,8 @@ export class Keyboard {
     if (e.keyCode === 38) { this.keys.up = false }
     if (e.keyCode === 39) { this.keys.right = false }
     if (e.keyCode === 40) { this.keys.down = false }
+
+    if (e.keyCode === 32) { this.keys.kick = false }
     e.preventDefault()
   }
 
@@ -45,6 +50,14 @@ export class Keyboard {
     if (this.keys.right === true && this.keys.up === false && this.keys.down === false) { return Directions.E }
 
     return null
+  }
+
+  getAction() {
+    //console.log(Actions)
+    if (this.keys.kick === true) {
+      this.keys.kick = false
+      return Actions.kick
+    }
   }
 
 }

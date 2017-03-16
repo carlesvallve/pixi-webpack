@@ -23,6 +23,12 @@ export class Camera extends PIXI.Container {
   }
 
 
+  setTarget(target) {
+    this.target = target
+    console.log('camera target set to', this.target )
+  }
+
+
   render() {
     // get increments for this frame
     const dx = (this.target.x - this.x) / this.elasticity

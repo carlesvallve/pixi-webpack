@@ -1,12 +1,9 @@
-//import pubsub from 'pubsub-js'
-import { rectangle } from './utils'
-
+//import { rectangle } from './utils'
 
 export class Goal extends PIXI.Container {
 
   constructor(props) {
     super()
-    //pubsub.subscribe('render', this.render.bind(this));
 
     this.side = props.side
     this.position.set(props.x, props.y)

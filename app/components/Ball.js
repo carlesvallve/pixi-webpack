@@ -11,9 +11,8 @@ export class Ball extends PIXI.Container {
     this.position.set(props.x, props.y)
 
     this.owner = null
-    this.elasticity = 10
 
-    this.shadow = this.app.world.addChildAt(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }), 1);
+    this.shadow = this.app.world.background.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));
   }
 
@@ -34,15 +33,20 @@ export class Ball extends PIXI.Container {
     this.owner = player
   }
 
+
+
   render() {
 
     // stick ball to ball owner
     if (this.owner !== null) {
+      const distance = 8
+      const elasticity = 10
       const inc = DirectionVectors[this.owner.direction]
-      const tx = this.owner.position.x + (inc.x * 8) + (this.owner.increments.x * 8)
-      const ty = this.owner.position.y + (inc.y * 8) + (this.owner.increments.y * 8)
-      const dx = (tx - this.x) / this.elasticity
-      const dy = (ty - this.y) / this.elasticity
+
+      const tx = this.owner.position.x + (inc.x * distance) + (this.owner.increments.x * distance)
+      const ty = this.owner.position.y + (inc.y * distance) + (this.owner.increments.y * distance)
+      const dx = (tx - this.x) / elasticity
+      const dy = (ty - this.y) / elasticity
       this.x += dx
       this.y += dy
     }

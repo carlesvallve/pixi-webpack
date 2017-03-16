@@ -20,7 +20,7 @@ export const Tilesets = (cb = null) => {
 
   // throughout the process multiple signals can be dispatched.
   loader.onProgress.add((loader, res) => { // called once per loaded/errored file
-    console.log('Progress:', loader.progress + '%') //loader.progress + '%');
+    //console.log('Progress:', loader.progress + '%') //loader.progress + '%');
   })
   loader.onError.add((error) => { // called once per errored file
     console.log('Error:', error)
@@ -29,7 +29,7 @@ export const Tilesets = (cb = null) => {
     //console.log('Loaded file:', res)
   })
   loader.onComplete.add((loader, res) => { // called once when the queued resources all load.
-    //console.log('All files loaded', loader.progress + '%', res)
+    console.log('All files loaded', loader.progress + '%', res)
   })
 
   loader.load((loader, res) => {
