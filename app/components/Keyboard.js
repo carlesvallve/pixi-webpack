@@ -2,6 +2,8 @@ import { Actions, Directions } from './enums'
 
 export class Keyboard {
   constructor() {
+    // 37: left 38: up 39: right 40: down
+    // 88(X): shoot, 90(Z):
 
     this.keys = {
       up: false, down: false, left: false, right: false,
@@ -14,13 +16,12 @@ export class Keyboard {
   }
 
   downHandler (e) {
-    // 37: left 38: up 39: right 40: down
     if (e.keyCode === 37) { this.keys.left = true }
     if (e.keyCode === 38) { this.keys.up = true }
     if (e.keyCode === 39) { this.keys.right = true }
     if (e.keyCode === 40) { this.keys.down = true }
 
-    if (e.keyCode === 32) { this.keys.kick = true }
+    if (e.keyCode === 88) { this.keys.kick = true }
     e.preventDefault()
   }
 
@@ -31,12 +32,9 @@ export class Keyboard {
     if (e.keyCode === 39) { this.keys.right = false }
     if (e.keyCode === 40) { this.keys.down = false }
 
-    if (e.keyCode === 32) { this.keys.kick = false }
+    if (e.keyCode === 88) { this.keys.kick = false }
     e.preventDefault()
   }
-
-
-
 
   getDirection() {
     if (this.keys.up === true && this.keys.left === true) { return Directions.NW }
@@ -53,7 +51,6 @@ export class Keyboard {
   }
 
   getAction() {
-    //console.log(Actions)
     if (this.keys.kick === true) {
       this.keys.kick = false
       return Actions.kick

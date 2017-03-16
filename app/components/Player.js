@@ -3,6 +3,7 @@ import PlayerAnimation from './PlayerAnimation'
 import { Sides, Actions, Directions, DirectionVectors } from './enums'
 import { getDistance } from './geometry'
 import Audio from './Audio'
+import { randomInt } from './utils'
 
 
 export class Player extends PIXI.Container {
@@ -70,8 +71,15 @@ export class Player extends PIXI.Container {
 
     Audio.playRandom(Audio.sfx.kick,
       0.2 + Math.random() * 0.2, // volume
-      1.0 // + Math.random() * 0.5  // speed
+      1.0 + Math.random() * 1.0  // speed
     )
+
+    console.log(this.direction)
+    
+    const d = randomInt(50, 100)
+    const inc = DirectionVectors[this.direction]
+    const point = { x: inc.x * d, y: inc.y * d }
+    this.app.ball.setTargetPoint(point)
   }
 
 
