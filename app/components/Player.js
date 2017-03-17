@@ -1,8 +1,8 @@
 import pubsub from 'pubsub-js'
+import Audio from './Audio'
 import PlayerAnimation from './PlayerAnimation'
 import { Sides, Actions, Directions, DirectionVectors } from './enums'
 import { getDistance } from './geometry'
-import Audio from './Audio'
 import { randomInt } from './utils'
 
 
@@ -13,11 +13,12 @@ export class Player extends PIXI.Container {
     pubsub.subscribe('render', this.render.bind(this));
 
     // initialize player properties
-    this.app = props.app
+    this.game = props.game
     this.action = Actions.idle
     this.team = props.team
     this.color = this.team ? this.team.color : 'red'
     this.side = this.team ? this.team.side : Directions.N
+    this.num = props.num
     this.direction = this.side
     this.position.set(props.x, props.y)
     this.speed = props.speed || 2 + Math.random() * 1
@@ -36,11 +37,11 @@ export class Player extends PIXI.Container {
   }
 
   isSelected() {
-    return this === this.app.player
+    return this === this.game.player
   }
 
   isControlling() {
-    return this.app.ball.owner = this
+    return this.game.ball.owner = this
   }
 
   move(direction) {
@@ -54,32 +55,27 @@ export class Player extends PIXI.Container {
 
 
   ballControl() {
-    if (this !== this.app.player) { return }
+    if (this !== this.game.player) { return }
 
-    const ball = this.app.ball
-    const dist = getDistance(this.position, this.app.ball.position)
+    const ball = this.game.ball
+    const dist = getDistance(this.position, this.game.ball.position)
 
     if (dist <= 16) {
-      ball.setOwner(this)
+      ball.setBallControl(this)
     }
   }
 
-  shoot() {
+
+  kick() {
     if (!this.isControlling()) { return }
 
     this.action = Actions.kick
 
-    Audio.playRandom(Audio.sfx.kick,
-      0.2 + Math.random() * 0.2, // volume
-      1.0 + Math.random() * 1.0  // speed
-    )
-
-    console.log(this.direction)
-    
-    const d = randomInt(50, 100)
+    const d = randomInt(200, 200)
     const inc = DirectionVectors[this.direction]
-    const point = { x: inc.x * d, y: inc.y * d }
-    this.app.ball.setTargetPoint(point)
+    const vec = { x: inc.x * d, y: inc.y * d }
+
+    this.game.ball.setBallKick(vec)
   }
 
 

@@ -15,6 +15,7 @@ export class Keyboard {
     window.addEventListener('keyup', this.upHandler.bind(this), false)
   }
 
+
   downHandler (e) {
     if (e.keyCode === 37) { this.keys.left = true }
     if (e.keyCode === 38) { this.keys.up = true }
@@ -24,6 +25,7 @@ export class Keyboard {
     if (e.keyCode === 88) { this.keys.kick = true }
     e.preventDefault()
   }
+
 
   upHandler (e) {
     // 37: left 38: up 39: right 40: down
@@ -35,6 +37,7 @@ export class Keyboard {
     if (e.keyCode === 88) { this.keys.kick = false }
     e.preventDefault()
   }
+
 
   getDirection() {
     if (this.keys.up === true && this.keys.left === true) { return Directions.NW }
@@ -50,10 +53,34 @@ export class Keyboard {
     return null
   }
 
+
   getAction() {
     if (this.keys.kick === true) {
       this.keys.kick = false
       return Actions.kick
+    }
+  }
+
+
+  updateUserControls(game) {
+    if (!game.player) { return }
+
+    // TODO: use events to reset states for all relevant elements
+    if (game.ball.out) { //} || game.ball.out) {
+      game.player.stop()
+      return
+    }
+
+    const dir = this.getDirection()
+    if (dir === null) {
+      game.player.stop()
+    } else {
+      game.player.move(dir)
+    }
+
+    const action = this.getAction()
+    if (action === Actions.kick) {
+      game.player.kick()
     }
   }
 

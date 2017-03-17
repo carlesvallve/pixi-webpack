@@ -1,5 +1,5 @@
 import pubsub from 'pubsub-js'
-import { rectangle } from './utils'
+import { rectangle } from './geometry'
 
 export class Camera extends PIXI.Container {
 
@@ -25,7 +25,6 @@ export class Camera extends PIXI.Container {
 
   setTarget(target) {
     this.target = target
-    console.log('camera target set to', this.target )
   }
 
 

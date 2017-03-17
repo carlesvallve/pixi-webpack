@@ -1,6 +1,6 @@
 import pubsub      from 'pubsub-js'
-import { Actions } from './enums'
 import Audio       from './Audio'
+import { Actions } from './enums'
 
 
 export class PlayerAnimation extends PIXI.Container {
@@ -9,15 +9,16 @@ export class PlayerAnimation extends PIXI.Container {
     super()
     pubsub.subscribe('render', this.render.bind(this));
 
+    this.game = props.player.game
     this.player = props.player
 
     this.shadows = {
-      idle: this.player.app.world.background.addChild(this.setAnimations('shadow', 'run', 1, 1)),
-      run: this.player.app.world.background.addChild(this.setAnimations('shadow', 'run', 1, 8)),
-      kick: this.player.app.world.background.addChild(this.setAnimations('shadow', 'run', 2, 4)),
-      fall: this.player.app.world.background.addChild(this.setAnimations('shadow', 'falling', 1, 3)),
-      tackle: this.player.app.world.background.addChild(this.setAnimations('shadow', 'tacle', 1, 1)),
-      throw: this.player.app.world.background.addChild(this.setAnimations('shadow', 'throwin', 1, 3))
+      idle: this.game.background.addChild(this.setAnimations('shadow', 'run', 1, 1)),
+      run: this.game.background.addChild(this.setAnimations('shadow', 'run', 1, 8)),
+      kick: this.game.background.addChild(this.setAnimations('shadow', 'run', 2, 4)),
+      fall: this.game.background.addChild(this.setAnimations('shadow', 'falling', 1, 3)),
+      tackle: this.game.background.addChild(this.setAnimations('shadow', 'tacle', 1, 1)),
+      throw: this.game.background.addChild(this.setAnimations('shadow', 'throwin', 1, 3))
     }
 
     this.sprites = {

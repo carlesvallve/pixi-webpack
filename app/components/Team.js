@@ -1,16 +1,20 @@
 //import pubsub from 'pubsub-js'
+import Audio from './Audio'
 import Player from './Player'
 import { Sides } from './enums'
 import { getFormation, getRandomFormation } from './formations'
+
 
 export class Team {
 
   constructor(props) {
     //pubsub.subscribe('render', this.render.bind(this));
 
-    this.app = props.app
+    this.game = props.game
     this.side = props.side
     this.color = props.color
+
+    this.score = 0
 
     this.setFormation()
     this.createPlayers()
@@ -18,6 +22,7 @@ export class Team {
 
     console.log('Team', this.color, this.formation.id)
   }
+
 
 
   setFormation(id = null) {
@@ -36,29 +41,46 @@ export class Team {
     this.players = []
 
     for (let i = 0; i < this.formation.positions.length; i++) {
-      this.players.push(
-        this.app.world.foreground.addChild(new Player({
-          app: this.app,
-          team: this,
-          x: this.formation.positions[i].x,
-          y: this.baseY + this.formation.positions[i].y * this.separationY
-        }))
-      )
+      const player = this.game.foreground.addChild(new Player({
+        game: this.game,
+        team: this,
+        num: i,
+        x: this.formation.positions[i].x,
+        y: this.baseY + this.formation.positions[i].y * this.separationY
+      }))
+
+      this.players.push(player)
+      this.game.players.push(player)
     }
   }
 
-  selectPlayer(num) {
-     this.app.player = this.players[num]
+  setAttacking() {
+    if (this.game.teams) {
+      this.game.teams[0].attacking = false
+      this.game.teams[1].attacking = false
+    }
+    this.attacking = true
+  }
 
-     if (this.app.camera) {
-       this.app.camera.setTarget(this.app.player)
-     }
+
+  selectPlayer(num) {
+     this.game.player = this.players[num]
+     this.setAttacking()
   }
 
   selectNextPlayer() {
-    let num = this.app.player.num + 1
+    let num = this.game.player.num + 1
     if (num > players.length) { num = 0 }
     selectPlayer(num)
+  }
+
+
+  // area events
+
+  scoreGoal(player) {
+    this.score += 1
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.game.ball.reset()
   }
 
 }
