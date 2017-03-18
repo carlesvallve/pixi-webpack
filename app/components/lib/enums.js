@@ -1,5 +1,10 @@
 export const Options = {
-  displayAreas: false
+  display: {
+    areas: false,
+    labels: {
+      player: true
+    }
+  }
 }
 
 export const Sides = {

@@ -1,7 +1,7 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
 import PlayerAnimation from './PlayerAnimation'
-import { Sides, Actions, Directions, DirectionVectors } from './lib/enums'
+import { Options, Sides, Actions, Directions, DirectionVectors } from './lib/enums'
 import { getDistance } from './lib/geometry'
 import { randomInt } from './lib/random'
 
@@ -26,6 +26,12 @@ export class Player extends PIXI.Container {
 
     // create player animated sprite
     this.sprite = this.addChild(new PlayerAnimation({ player: this }))
+
+    // create player label
+    const style = {font:"10px Arial", fill:"white", stroke:'black', strokeThickness: 1, align:"center"}
+    this.label = this.addChild(new PIXI.Text(this.num, style))
+    this.label.anchor.set(0.5, 1.7)
+    this.label.visible = Options.display.labels.player
 
     this.hasBall = false
   }

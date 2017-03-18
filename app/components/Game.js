@@ -56,7 +56,7 @@ export class Game extends PIXI.Container {
     }
 
     for (let id in this.areas) {
-      this.areas[id].visible = Options.displayAreas
+      this.areas[id].visible = Options.display.areas
     }
   }
 
