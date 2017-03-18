@@ -1,18 +1,9 @@
 import pubsub    from 'pubsub-js'
 import Audio     from './Audio'
-import Keyboard  from './Keyboard.js'
 
 import Game      from './Game'
-
-import Stadium   from './Stadium'
-import Goal      from './Goal'
-import Ball      from './Ball'
-import Team      from './Team'
-import Player    from './Player'
 import Camera    from './Camera'
-
-import { Actions, Sides } from './enums'
-import { getDistance } from './geometry'
+import Keyboard  from './Keyboard.js'
 
 
 export class World extends PIXI.Container {
@@ -25,17 +16,16 @@ export class World extends PIXI.Container {
     this.position.set(props.x, props.y)
     this.scale.set(1.0)
 
-    //this.rectangle = this.addChild(rectangle(-100, -100, 200, 200, 0x333333, 0x000000, 1));
-
+    // create game
     this.game = this.addChild(new Game({ world: this.world }))
-
-    // create keyboard
-    this.keyboard = new Keyboard()
 
     // create camera
     this.camera = this.addChild(new Camera({
       world: this, target: this.game.ball || null, offset: { x: 0, y: 83 }
     }))
+
+    // create keyboard
+    this.keyboard = new Keyboard()
   }
 
 

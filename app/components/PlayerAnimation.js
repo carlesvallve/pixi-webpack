@@ -1,6 +1,6 @@
 import pubsub      from 'pubsub-js'
 import Audio       from './Audio'
-import { Actions } from './enums'
+import { Actions } from './lib/enums'
 
 
 export class PlayerAnimation extends PIXI.Container {

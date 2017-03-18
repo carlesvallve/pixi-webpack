@@ -1,8 +1,8 @@
 //import pubsub from 'pubsub-js'
 import Audio from './Audio'
 import Player from './Player'
-import { Sides } from './enums'
-import { getFormation, getRandomFormation } from './formations'
+import { Sides } from './lib/enums'
+import { getFormation, getRandomFormation } from './lib/formations'
 
 
 export class Team {
@@ -68,14 +68,13 @@ export class Team {
      this.setAttacking()
   }
 
+
   selectNextPlayer() {
     let num = this.game.player.num + 1
     if (num > players.length) { num = 0 }
     selectPlayer(num)
   }
 
-
-  // area events
 
   scoreGoal(player) {
     this.score += 1

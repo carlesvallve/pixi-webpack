@@ -1,8 +1,8 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
-import { Directions, DirectionVectors } from './enums'
-import { getBounds, getDistance } from './geometry'
-import { randomInt } from './utils'
+import { Directions, DirectionVectors } from './lib/enums'
+import { getBounds, getDistance } from './lib/geometry'
+import { randomInt } from './lib/random'
 
 export class Ball extends PIXI.Container {
 
@@ -69,6 +69,10 @@ export class Ball extends PIXI.Container {
         })
       })
     })
+  }
+
+  isInactive() {
+    return this.out || this.scoring || !this.initialized
   }
 
 
@@ -177,7 +181,7 @@ export class Ball extends PIXI.Container {
     if (this.targetPoint !== null) {
 
       // move to target point
-      const elasticity =  this.out || this.scoring ? 30 : 12
+      const elasticity =  this.out ? 40 : 12
       const tx = this.targetPoint.x
       const ty = this.targetPoint.y
       const dx = (tx - this.x) / elasticity
@@ -189,13 +193,17 @@ export class Ball extends PIXI.Container {
       const pitch = getBounds(this.game.areas.pitch)
       const goal = getBounds(this.game.areas.goalN)
       const d = 5
+
+      // outside goal
       if (this.out && this.x < 0 && this.x > goal.left - d) { this.x = goal.left - d }
       if (this.out && this.x > 0 && this.x < goal.right + d) { this.x = goal.right + d }
+
+      // inside goal
       if (this.scoring) {
         if (this.y < pitch.top - 30) { this.y = pitch.top - 30 }
         if (this.y > pitch.bottom + 30) { this.y = pitch.bottom + 30 }
-        if (this.out && this.x < 0 && this.x < goal.left + d) { this.x = goal.left + d }
-        if (this.out && this.x > 0 && this.x > goal.right - d) { this.x = goal.right - d }
+        if (this.x < 0 && this.x < goal.left + d) { this.x = goal.left + d }
+        if (this.x > 0 && this.x > goal.right - d) { this.x = goal.right - d }
       }
 
       // arrival to target point

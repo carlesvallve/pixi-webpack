@@ -1,5 +1,3 @@
-//import { rectangle } from './utils'
-
 export class Goal extends PIXI.Container {
 
   constructor(props) {
@@ -16,8 +14,6 @@ export class Goal extends PIXI.Container {
     sprite.anchor.set(0.52, this.side === 'N' ? 0.95 : 0.95)
     sprite.scale.set(0.5);
     this.addChild(sprite);
-
-    //this.rectangle = sprite.addChild(rectangle(-80, -2, 160, 4, 0xffffff, 0x000000, 0));
   }
 
   render() {

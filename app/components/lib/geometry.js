@@ -7,12 +7,11 @@ export const getVector = (pos1, pos2) => {
   return new PIXI.Vector(x, y) //{ x, y }
 }
 
+
 export const getDistance = (pos1, pos2) => {
   const vector = getVector(pos1, pos2)
   return vector.length()
 }
-
-
 
 
 /**
@@ -35,6 +34,7 @@ export const rectangle = (x, y, width, height, backgroundColor, borderColor, bor
 
   return box;
 }
+
 
 export const getBounds = (rect) => {
   const bounds = rect.getLocalBounds()

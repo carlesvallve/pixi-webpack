@@ -1,4 +1,4 @@
-import { Actions, Directions } from './enums'
+import { Actions, Directions } from './lib/enums'
 
 export class Keyboard {
   constructor() {
@@ -63,14 +63,16 @@ export class Keyboard {
 
 
   updateUserControls(game) {
-    if (!game.player) { return }
+    if (!game.player) {
+      return
+    }
 
-    // TODO: use events to reset states for all relevant elements
-    if (game.ball.out) { //} || game.ball.out) {
+    if (game.ball.isInactive()) {
       game.player.stop()
       return
     }
 
+    // set direction
     const dir = this.getDirection()
     if (dir === null) {
       game.player.stop()
@@ -78,6 +80,7 @@ export class Keyboard {
       game.player.move(dir)
     }
 
+    // set action
     const action = this.getAction()
     if (action === Actions.kick) {
       game.player.kick()

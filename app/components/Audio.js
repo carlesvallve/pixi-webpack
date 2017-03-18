@@ -1,4 +1,4 @@
-import { randomInt } from './utils'
+import { randomInt } from './lib/random'
 
 // Settings
 const masterVolume = 1

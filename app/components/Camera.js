@@ -1,5 +1,5 @@
 import pubsub from 'pubsub-js'
-import { rectangle } from './geometry'
+import { rectangle } from './lib/geometry'
 
 export class Camera extends PIXI.Container {
 

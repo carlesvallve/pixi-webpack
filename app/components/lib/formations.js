@@ -1,4 +1,4 @@
-import { randomInt } from './utils'
+import { randomInt } from './random'
 
 export const getFormation = (id, direction) => {
   const dy = 30 * -direction

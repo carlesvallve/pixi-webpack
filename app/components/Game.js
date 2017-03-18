@@ -7,8 +7,8 @@ import Ball      from './Ball'
 import Team      from './Team'
 import Player    from './Player'
 
-import { Actions, Sides } from './enums'
-import { rectangle, getBounds, getDistance } from './geometry'
+import { Options, Actions, Sides } from './lib/enums'
+import { rectangle, getBounds, getDistance } from './lib/geometry'
 
 
 export class Game extends PIXI.Container {
@@ -16,9 +16,13 @@ export class Game extends PIXI.Container {
     super()
     pubsub.subscribe('render', this.render.bind(this))
 
+    //this.options = getOptions()
+
     // create stadium
     this.stadium = this.addChild(new Stadium({ x: 0, y: -83 }))
-    this.defineAreas()
+
+    // define reactangular areas in the game (pitch, goals, areas, etc)
+    this.setAreas()
 
     // create layer containers to hold sortable elements
     this.background = this.addChild(new PIXI.Container())
@@ -28,7 +32,7 @@ export class Game extends PIXI.Container {
     this.ball = this.foreground.addChild(new Ball({ game: this, x: 0, y: 0 }))
 
     // create teams
-    this.players = [] // -> array that holds all players from both teams
+    this.players = [] // array that holds all players from both teams
     this.teams = [
       new Team({ game: this, side: Sides.N, color: 'red' }),
       new Team({ game: this, side: Sides.S, color: 'blue' })
@@ -42,7 +46,7 @@ export class Game extends PIXI.Container {
   }
 
 
-  defineAreas() {
+  setAreas() {
     this.areas = {
       pitch: this.addChild(rectangle(-228, -342, 456, 684, 0x333333, 0x000000, 1, PIXI.blendModes.ADD)),
       areaN: this.addChild(rectangle(-148, -342, 296, 100, 0xff0000, 0x000000, 1, PIXI.blendModes.ADD)),
@@ -51,14 +55,17 @@ export class Game extends PIXI.Container {
       goalS: this.addChild(rectangle(-34, 342, 68, 34, 0x0000ff, 0x000000, 1, PIXI.blendModes.ADD))
     }
 
-    console.log(getBounds(this.areas.goalN)) //.getBounds()) //.getBounds())
-    //console.log('goalN', getBounds(this.areas.goalN)) //.getBounds())
-    // console.log('_bounds', this.areas.pitch._bounds)
-    //console.log(getBounds(this.areas.pitch))
+    for (let id in this.areas) {
+      this.areas[id].visible = Options.displayAreas
+    }
   }
 
 
-  getActivePlayer() {
+  setActivePlayer() {
+    if (this.ball.isInactive()) {
+      return
+    }
+
     // get nearest player to the ball
     const player = this.getNearestPlayerTo(this.players, this.ball)
 
@@ -89,7 +96,7 @@ export class Game extends PIXI.Container {
   }
 
   render() {
-    this.getActivePlayer()
+    this.setActivePlayer()
   }
 
 

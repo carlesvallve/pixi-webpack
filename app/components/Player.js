@@ -1,9 +1,9 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
 import PlayerAnimation from './PlayerAnimation'
-import { Sides, Actions, Directions, DirectionVectors } from './enums'
-import { getDistance } from './geometry'
-import { randomInt } from './utils'
+import { Sides, Actions, Directions, DirectionVectors } from './lib/enums'
+import { getDistance } from './lib/geometry'
+import { randomInt } from './lib/random'
 
 
 export class Player extends PIXI.Container {

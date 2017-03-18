@@ -1,3 +1,7 @@
+export const Options = {
+  displayAreas: false
+}
+
 export const Sides = {
   N:  'N',
   S: 'S'
