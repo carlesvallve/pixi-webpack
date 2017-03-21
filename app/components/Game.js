@@ -29,6 +29,7 @@ export class Game extends PIXI.Container {
     this.initElements()
 
     // start game
+    this.player = null
     this.kickoff()
   }
 
@@ -53,7 +54,6 @@ export class Game extends PIXI.Container {
       this.areas[id].visible = Options.display.areas
     }
 
-
     // create layer containers to hold sortable elements
     this.background = this.addChild(new PIXI.Container())
     this.foreground = this.addChild(new PIXI.Container())
@@ -62,6 +62,8 @@ export class Game extends PIXI.Container {
     this.ball = this.foreground.addChild(new Ball({ game: this }))
 
     // create teams
+    // TODO; probably we should organize this by side or color.
+    //we also need a way to determine in which direction the team is attacking
     this.players = [] // array that holds all players from both teams
     this.teams = [
       new Team({ game: this, side: Sides.N, color: 'red' }),
@@ -108,8 +110,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  out(e) {
-    console.log(e)
+  out(e, props) {
+    console.log(e, props)
     this.state = GameStates.out
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -118,8 +120,8 @@ export class Game extends PIXI.Container {
 
   }
 
-  corner(e, side) {
-    console.log(e, side)
+  corner(e, props) {
+    console.log(e, props)
     this.state = GameStates.corner
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -127,8 +129,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  goalKick(e, side) {
-    console.log(e, side)
+  goalKick(e, props) {
+    console.log(e, props)
     this.state = GameStates.goalKick
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -136,17 +138,21 @@ export class Game extends PIXI.Container {
     })
   }
 
-  goal(e, player) {
-    console.log(e, player)
+  goal(e, props) {
+    console.log(e, props)
     this.state = GameStates.goal
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+
+    //const { player } = props
+    //player.team.score += 1
+
     this.wait(0.2, () => {
       this.kickoff()
     })
   }
 
-  fault(e) {
-    console.log(e)
+  fault(e, props) {
+    console.log(e, props)
     this.state = GameStates.fault
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -154,8 +160,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  penalty(e) {
-    console.log(e)
+  penalty(e, props) {
+    console.log(e, props)
     this.state = GameStates.penalty
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -187,8 +193,10 @@ export class Game extends PIXI.Container {
 
     if (player !== null && player !== this.player) {
       // reset old active player
-      this.player.stop()
-      this.ball.setBallControl(null)
+      if (this.player !== null) {
+        this.player.stop()
+        this.ball.setBallControl(null)
+      }
 
       // select new active player
       player.team.selectPlayer(player.num)

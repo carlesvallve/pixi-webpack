@@ -83,7 +83,10 @@ export class Keyboard {
     // set action
     const action = this.getAction()
     if (action === Actions.kick) {
-      game.player.kick()
+      if (game.ball.owner) {
+        game.ball.owner.kick()
+      }
+
     }
   }
 

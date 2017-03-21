@@ -54,6 +54,10 @@ export class Team {
     }
   }
 
+  gotoFormation () {
+
+  }
+
   setAttacking() {
     if (this.game.teams) {
       this.game.teams[0].attacking = false
@@ -73,13 +77,6 @@ export class Team {
     let num = this.game.player.num + 1
     if (num > players.length) { num = 0 }
     selectPlayer(num)
-  }
-
-
-  scoreGoal(player) {
-    //this.score += 1
-    //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-    //this.game.ball.reset()
   }
 
 }

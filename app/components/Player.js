@@ -64,6 +64,21 @@ export class Player extends PIXI.Container {
     this.position.set(this.x + this.increments.x, this.y + this.increments.y)
   }
 
+  gotoPoint(point) {
+    //this.action = Actions.run
+
+    const inc = {
+      x: (point.x - this.x) / 10,
+      y: (point.y - this.y) / 10,
+    }
+
+    // this.direction = direction
+    //
+    // const inc = DirectionVectors[this.direction]
+    this.increments = { x: inc.x * this.speed, y: inc.y * this.speed }
+    this.position.set(this.x + this.increments.x, this.y + this.increments.y)
+  }
+
 
   ballControl() {
 
@@ -97,6 +112,14 @@ export class Player extends PIXI.Container {
   render() {
     this.label.style.fill = (this === this.game.ball.owner) ? 'yellow' : 'white'
     this.ballControl()
+
+    if (this !== this.game.player) {
+      const formation = this.team.formation.positions[this.num]
+      this.gotoPoint({
+        x: formation.x,
+        y: this.team.baseY + formation.y * this.team.separationY
+      })
+    }
   }
 
 }

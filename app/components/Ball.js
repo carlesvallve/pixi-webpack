@@ -11,7 +11,6 @@ export class Ball extends PIXI.Container {
     pubsub.subscribe('render', this.render.bind(this));
 
     this.game = props.game
-
     this.shadow = this.game.background.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));
 
@@ -22,13 +21,11 @@ export class Ball extends PIXI.Container {
   setAnimation(id, offset = { x: 0.5, y: 0.5 }) {
     const texture = PIXI.Texture.fromFrame(id + '_1.png')
     const anim = new PIXI.extras.AnimatedSprite([texture])
-
     anim.scale.set(0.5)
     anim.anchor.set(offset.x, offset.y)
     anim.alpha = id === 'ball_shadow' ? 0.8 : 1
     anim.animationSpeed = 0
     anim.loop = true
-
     return anim
   }
 
@@ -60,41 +57,44 @@ export class Ball extends PIXI.Container {
 
     // out
     if (this.x < pitch.left || this.x > pitch.right) {
-      pubsub.publish('out', {})
+      pubsub.publish('out', { player: this.lastOwner })
       return
     }
 
-    // corners
+    // goalKicks or corners
     if (this.y < pitch.top && (this.x < goalN.left || this.x > goalN.right)) {
-      //console.log('ball corner...', 'N', this.x < goalN.left ? 'left' : 'right')
-      const side = this.x < goalN.left ? 'Left' : 'Right'
-      pubsub.publish('corner', { side: Sides.N + side })
+      if (this.lastOwner.team.side === Sides.N) {
+        pubsub.publish('goalKick', { side: Sides.N })
+      } else {
+        const side = this.x < goalN.left ? 'Left' : 'Right'
+        pubsub.publish('corner', { side: Sides.N + side })
+      }
+
       return
     }
     if (this.y > pitch.bottom && (this.x < goalS.left || this.x > goalS.right)) {
-      const side = this.x < goalN.left ? 'Left' : 'Right'
-      pubsub.publish('corner', { side: Sides.S + side })
+      if (this.lastOwner.team.side === Sides.S) {
+        pubsub.publish('goalKick', { side: Sides.S })
+      } else {
+        const side = this.x < goalN.left ? 'Left' : 'Right'
+        pubsub.publish('corner', { side: Sides.S + side })
+      }
       return
     }
-
-    // penalty areas
-
 
     // goals
     if (!this.game.isOut()) {
       if (this.y < pitch.top && (this.x > goalN.left && this.x < goalN.right)) {
-        //this.lastOwner.team.scoreGoal(this.lastOwner)
-        //this.scoring = true
-        pubsub.publish('goal', { player: this.lastOwner })
+        pubsub.publish('goal', { side: Sides.N, player: this.lastOwner })
         return
       }
       if (this.y > pitch.bottom && (this.x > goalS.left && this.x < goalS.right)) {
-        //this.lastOwner.team.scoreGoal(this.lastOwner)
-        //this.scoring = true
-        pubsub.publish('goal', { player: this.lastOwner })
+        pubsub.publish('goal', { side: Sides.S, player: this.lastOwner })
         return
       }
     }
+
+    // penalty areas...
   }
 
 
@@ -133,6 +133,8 @@ export class Ball extends PIXI.Container {
 
   setBallKick(vec) {
     if (this.owner === null) { return }
+
+    this.game.player = null
     this.shooter = this.owner
     this.owner = null
 
