@@ -181,7 +181,7 @@ export class Ball extends PIXI.Container {
     if (this.targetPoint !== null) {
 
       // move to target point
-      const elasticity =  this.out ? 40 : 12
+      const elasticity =  this.out ? 30 : 12
       const tx = this.targetPoint.x
       const ty = this.targetPoint.y
       const dx = (tx - this.x) / elasticity

@@ -33,6 +33,7 @@ export class Player extends PIXI.Container {
     this.label.anchor.set(0.5, 1.7)
     this.label.visible = Options.display.labels.player
 
+
     this.hasBall = false
   }
 
@@ -61,7 +62,11 @@ export class Player extends PIXI.Container {
 
 
   ballControl() {
-    if (this !== this.game.player) { return }
+
+    if (this === this.game.ball.shooter) { return }
+    if (this !== this.game.player) {
+      return
+    }
 
     const ball = this.game.ball
     const dist = getDistance(this.position, this.game.ball.position)
@@ -86,6 +91,7 @@ export class Player extends PIXI.Container {
 
 
   render() {
+    this.label.style.fill = (this === this.game.ball.owner) ? 'yellow' : 'white'
     this.ballControl()
   }
 
