@@ -1,6 +1,6 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
-import { Directions, DirectionVectors } from './lib/enums'
+import { States, Directions, DirectionVectors } from './lib/enums'
 import { getBounds, getDistance } from './lib/geometry'
 import { randomInt } from './lib/random'
 
@@ -16,12 +16,16 @@ export class Ball extends PIXI.Container {
     this.shadow = this.game.background.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));
 
-    this.initialized = false
-    this.out = false
-    this.scoring = false
+
+    this.state = States.kickoff
+
+    //this.initialized = false
+    //this.out = false
+    //this.scoring = false
     this.owner = null
     this.lastOwner = null
     this.shooter = null
+    this.lastShooter = null
     this.targetPoint = null
 
     this.reset()
@@ -50,19 +54,30 @@ export class Ball extends PIXI.Container {
     this.shadow.position = this.position
   }
 
-  reset() {
-    this.initialized = false
+  resetVars() {
+    this.owner = null
+    this.shooter = null
+    this.targetPoint = null
+  }
+
+  kickoff() {
+    this.state = States.idle
+
+    //this.initialized = false
 
     this.game.wait(0.2, () => {
+
       this.owner = null
       this.shooter = null
       this.targetPoint = null
 
       this.game.wait(0.2, () => {
+        this.state = States.kickoff
+
         this.position.set(0, 0)
-        this.initialized = true
-        this.out = false
-        this.scoring = false
+        //this.initialized = true
+        //this.out = false
+        //this.scoring = false
 
         this.game.wait(0.2, () => {
           Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
@@ -72,7 +87,20 @@ export class Ball extends PIXI.Container {
   }
 
   isInactive() {
-    return this.out || this.scoring || !this.initialized
+    //return this.out || this.scoring || !this.initialized
+    return
+      this.state === States.idle ||
+      this.state === States.kickoff ||
+      this.state === States.out ||
+      this.state === States.corner ||
+      this.state === States.goalKick ||
+      this.state === States.scoring
+  }
+
+  isActive() {
+    return
+      this.state === States.kick ||
+      this.state === States.control
   }
 
 

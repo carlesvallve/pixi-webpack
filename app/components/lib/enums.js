@@ -43,3 +43,16 @@ export const Actions = {
   tackle: 'tackle', // 1 frame
   throw: 'throw' // 3 frames
 }
+
+export const States = {
+  idle: 'idle',
+
+  kickoff: 'kickoff',
+  out: 'out',
+  scoring: 'scoring'
+  corner: 'corner',
+  goalKick: 'goalKick',
+
+  control: 'control',
+  kick: 'kick',
+}
