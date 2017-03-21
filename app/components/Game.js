@@ -14,6 +14,8 @@ import { rectangle, getBounds, getDistance } from './lib/geometry'
 export class Game extends PIXI.Container {
   constructor(props) {
     super()
+
+    // subscribe to game events
     pubsub.subscribe('render',    this.render.bind(this))
     pubsub.subscribe('kickoff',   this.kickoff.bind(this))
     pubsub.subscribe('out',       this.out.bind(this))
@@ -23,9 +25,10 @@ export class Game extends PIXI.Container {
     pubsub.subscribe('fault',     this.fault.bind(this))
     pubsub.subscribe('penalty',   this.penalty.bind(this))
 
-    //this.options = getOptions()
+    // create game elements
     this.initElements()
 
+    // start game
     this.kickoff()
   }
 
@@ -56,7 +59,7 @@ export class Game extends PIXI.Container {
     this.foreground = this.addChild(new PIXI.Container())
 
     // create ball
-    this.ball = this.foreground.addChild(new Ball({ game: this, x: 0, y: 0 }))
+    this.ball = this.foreground.addChild(new Ball({ game: this }))
 
     // create teams
     this.players = [] // array that holds all players from both teams
@@ -105,8 +108,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  out() {
-    console.log('out')
+  out(e) {
+    console.log(e)
     this.state = GameStates.out
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -115,8 +118,8 @@ export class Game extends PIXI.Container {
 
   }
 
-  corner() {
-    console.log('corner')
+  corner(e, side) {
+    console.log(e, side)
     this.state = GameStates.corner
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -124,8 +127,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  goalKick() {
-    console.log('goalKick')
+  goalKick(e, side) {
+    console.log(e, side)
     this.state = GameStates.goalKick
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -133,8 +136,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  goal() {
-    console.log('goal')
+  goal(e, player) {
+    console.log(e, player)
     this.state = GameStates.goal
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -142,8 +145,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  fault() {
-    console.log('fault')
+  fault(e) {
+    console.log(e)
     this.state = GameStates.fault
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -151,8 +154,8 @@ export class Game extends PIXI.Container {
     })
   }
 
-  penalty() {
-    console.log('penalty')
+  penalty(e) {
+    console.log(e)
     this.state = GameStates.penalty
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
@@ -173,11 +176,12 @@ export class Game extends PIXI.Container {
     window.setTimeout(cb, time * 1000)
   }
 
-  setActivePlayer() {
-    // if (this.ball.isInactive()) {
-    //   return
-    // }
 
+  // =================================
+  // Game functions
+  // =================================
+
+  setActivePlayer() {
     // get nearest player to the ball
     const player = this.getNearestPlayerTo(this.players, this.ball)
 
@@ -206,11 +210,6 @@ export class Game extends PIXI.Container {
 
     return nearestPlayer
   }
-
-
-
-
-
 
 }
 

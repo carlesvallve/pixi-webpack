@@ -1,6 +1,6 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
-import { GameStates, Directions, DirectionVectors } from './lib/enums'
+import { GameStates, Sides, Directions, DirectionVectors } from './lib/enums'
 import { getBounds, getDistance } from './lib/geometry'
 import { randomInt } from './lib/random'
 
@@ -11,7 +11,6 @@ export class Ball extends PIXI.Container {
     pubsub.subscribe('render', this.render.bind(this));
 
     this.game = props.game
-    this.position.set(props.x, props.y)
 
     this.shadow = this.game.background.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));
@@ -61,28 +60,20 @@ export class Ball extends PIXI.Container {
 
     // out
     if (this.x < pitch.left || this.x > pitch.right) {
-      //this.out = true
-      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      //this.reset()
       pubsub.publish('out', {})
       return
     }
 
     // corners
     if (this.y < pitch.top && (this.x < goalN.left || this.x > goalN.right)) {
-      //this.out = true
-      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      //this.reset()
-      console.log('ball corner...', 'N', this.x < goalN.left ? 'left' : 'right')
-      pubsub.publish('corner', {})
+      //console.log('ball corner...', 'N', this.x < goalN.left ? 'left' : 'right')
+      const side = this.x < goalN.left ? 'Left' : 'Right'
+      pubsub.publish('corner', { side: Sides.N + side })
       return
     }
     if (this.y > pitch.bottom && (this.x < goalS.left || this.x > goalS.right)) {
-      //this.out = true
-      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      //this.reset()
-      console.log('ball corner...', 'S', this.x < goalN.left ? 'left' : 'right')
-      pubsub.publish('corner', {})
+      const side = this.x < goalN.left ? 'Left' : 'Right'
+      pubsub.publish('corner', { side: Sides.S + side })
       return
     }
 
