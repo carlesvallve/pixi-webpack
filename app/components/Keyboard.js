@@ -67,7 +67,7 @@ export class Keyboard {
       return
     }
 
-    if (game.ball.isInactive()) {
+    if (game.isIdle()) {
       game.player.stop()
       return
     }

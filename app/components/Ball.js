@@ -1,6 +1,6 @@
 import pubsub from 'pubsub-js'
 import Audio from './Audio'
-import { States, Directions, DirectionVectors } from './lib/enums'
+import { GameStates, Directions, DirectionVectors } from './lib/enums'
 import { getBounds, getDistance } from './lib/geometry'
 import { randomInt } from './lib/random'
 
@@ -15,18 +15,6 @@ export class Ball extends PIXI.Container {
 
     this.shadow = this.game.background.addChild(this.setAnimation('ball_shadow', { x: 0.3, y: 0.7 }));
     this.sprite = this.addChild(this.setAnimation('ball'));
-
-
-    this.state = States.kickoff
-
-    //this.initialized = false
-    //this.out = false
-    //this.scoring = false
-    this.owner = null
-    this.lastOwner = null
-    this.shooter = null
-    this.lastShooter = null
-    this.targetPoint = null
 
     this.reset()
   }
@@ -46,6 +34,15 @@ export class Ball extends PIXI.Container {
   }
 
 
+  reset() {
+    this.owner = null
+    this.lastOwner = null
+    this.shooter = null
+    this.targetPoint = null
+    this.position.set(0, 0)
+  }
+
+
   render() {
     this.getBounds()
     this.updateBallControl()
@@ -54,86 +51,38 @@ export class Ball extends PIXI.Container {
     this.shadow.position = this.position
   }
 
-  resetVars() {
-    this.owner = null
-    this.shooter = null
-    this.targetPoint = null
-  }
-
-  kickoff() {
-    this.state = States.idle
-
-    //this.initialized = false
-
-    this.game.wait(0.2, () => {
-
-      this.owner = null
-      this.shooter = null
-      this.targetPoint = null
-
-      this.game.wait(0.2, () => {
-        this.state = States.kickoff
-
-        this.position.set(0, 0)
-        //this.initialized = true
-        //this.out = false
-        //this.scoring = false
-
-        this.game.wait(0.2, () => {
-          Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-        })
-      })
-    })
-  }
-
-  isInactive() {
-    //return this.out || this.scoring || !this.initialized
-    return
-      this.state === States.idle ||
-      this.state === States.kickoff ||
-      this.state === States.out ||
-      this.state === States.corner ||
-      this.state === States.goalKick ||
-      this.state === States.scoring
-  }
-
-  isActive() {
-    return
-      this.state === States.kick ||
-      this.state === States.control
-  }
-
 
   getBounds() {
-    if (!this.initialized) { return }
+    if (this.game.isIdle()) { return }
 
     const pitch = getBounds(this.game.areas.pitch)
     const goalN = getBounds(this.game.areas.goalN)
     const goalS = getBounds(this.game.areas.goalS)
 
-    //console.log(goalN.left, goalN.right, this.x)
-    //console.log(this.x)
-
     // out
-
     if (this.x < pitch.left || this.x > pitch.right) {
-      this.out = true
-      Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      this.reset()
+      //this.out = true
+      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+      //this.reset()
+      pubsub.publish('out', {})
       return
     }
 
     // corners
     if (this.y < pitch.top && (this.x < goalN.left || this.x > goalN.right)) {
-      this.out = true
-      Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      this.reset()
+      //this.out = true
+      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+      //this.reset()
+      console.log('ball corner...', 'N', this.x < goalN.left ? 'left' : 'right')
+      pubsub.publish('corner', {})
       return
     }
     if (this.y > pitch.bottom && (this.x < goalS.left || this.x > goalS.right)) {
-      this.out = true
-      Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-      this.reset()
+      //this.out = true
+      //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+      //this.reset()
+      console.log('ball corner...', 'S', this.x < goalN.left ? 'left' : 'right')
+      pubsub.publish('corner', {})
       return
     }
 
@@ -141,15 +90,17 @@ export class Ball extends PIXI.Container {
 
 
     // goals
-    if (!this.out) {
+    if (!this.game.isOut()) {
       if (this.y < pitch.top && (this.x > goalN.left && this.x < goalN.right)) {
-        this.lastOwner.team.scoreGoal(this.lastOwner)
-        this.scoring = true
+        //this.lastOwner.team.scoreGoal(this.lastOwner)
+        //this.scoring = true
+        pubsub.publish('goal', { player: this.lastOwner })
         return
       }
       if (this.y > pitch.bottom && (this.x > goalS.left && this.x < goalS.right)) {
-        this.lastOwner.team.scoreGoal(this.lastOwner)
-        this.scoring = true
+        //this.lastOwner.team.scoreGoal(this.lastOwner)
+        //this.scoring = true
+        pubsub.publish('goal', { player: this.lastOwner })
         return
       }
     }
@@ -174,7 +125,7 @@ export class Ball extends PIXI.Container {
       this.targetPoint = null
 
       const distance = 8
-      const elasticity = this.out || this.scoring ? 30 : 10
+      const elasticity = this.game.isIdle() ? 30 : 10
       const inc = DirectionVectors[this.owner.direction]
 
       const tx = this.owner.position.x + (inc.x * distance) + (this.owner.increments.x * distance)
@@ -209,7 +160,7 @@ export class Ball extends PIXI.Container {
     if (this.targetPoint !== null) {
 
       // move to target point
-      const elasticity =  this.out ? 30 : 12
+      const elasticity =  this.game.isIdle() ? 30 : 12
       const tx = this.targetPoint.x
       const ty = this.targetPoint.y
       const dx = (tx - this.x) / elasticity
@@ -223,11 +174,11 @@ export class Ball extends PIXI.Container {
       const d = 5
 
       // outside goal
-      if (this.out && this.x < 0 && this.x > goal.left - d) { this.x = goal.left - d }
-      if (this.out && this.x > 0 && this.x < goal.right + d) { this.x = goal.right + d }
+      if (this.game.isOut() && this.x < 0 && this.x > goal.left - d) { this.x = goal.left - d }
+      if (this.game.isOut() && this.x > 0 && this.x < goal.right + d) { this.x = goal.right + d }
 
       // inside goal
-      if (this.scoring) {
+      if (this.game.state === GameStates.goal) {
         if (this.y < pitch.top - 30) { this.y = pitch.top - 30 }
         if (this.y > pitch.bottom + 30) { this.y = pitch.bottom + 30 }
         if (this.x < 0 && this.x < goal.left + d) { this.x = goal.left + d }

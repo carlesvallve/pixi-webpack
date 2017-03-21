@@ -64,7 +64,7 @@ export class Team {
 
 
   selectPlayer(num) {
-     this.game.player = this.players[num]
+     this.players[num].select()
      this.setAttacking()
   }
 
@@ -77,9 +77,9 @@ export class Team {
 
 
   scoreGoal(player) {
-    this.score += 1
-    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-    this.game.ball.reset()
+    //this.score += 1
+    //Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    //this.game.ball.reset()
   }
 
 }

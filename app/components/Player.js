@@ -37,6 +37,10 @@ export class Player extends PIXI.Container {
     this.hasBall = false
   }
 
+  select() {
+    this.game.player = this
+  }
+
 
   stop() {
     this.action = Actions.idle

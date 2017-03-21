@@ -1,0 +1,4 @@
+- kickoff
+- out
+- corner
+- goal

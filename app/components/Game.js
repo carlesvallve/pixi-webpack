@@ -7,22 +7,49 @@ import Ball      from './Ball'
 import Team      from './Team'
 import Player    from './Player'
 
-import { Options, Actions, Sides } from './lib/enums'
+import { Options, GameStates, Actions, Sides } from './lib/enums'
 import { rectangle, getBounds, getDistance } from './lib/geometry'
 
 
 export class Game extends PIXI.Container {
   constructor(props) {
     super()
-    pubsub.subscribe('render', this.render.bind(this))
+    pubsub.subscribe('render',    this.render.bind(this))
+    pubsub.subscribe('kickoff',   this.kickoff.bind(this))
+    pubsub.subscribe('out',       this.out.bind(this))
+    pubsub.subscribe('corner',    this.corner.bind(this))
+    pubsub.subscribe('goalKick',  this.goalKick.bind(this))
+    pubsub.subscribe('goal',      this.goal.bind(this))
+    pubsub.subscribe('fault',     this.fault.bind(this))
+    pubsub.subscribe('penalty',   this.penalty.bind(this))
 
     //this.options = getOptions()
+    this.initElements()
 
+    this.kickoff()
+  }
+
+  // =================================
+  // Game Initialization
+  // =================================
+
+  initElements() {
     // create stadium
     this.stadium = this.addChild(new Stadium({ x: 0, y: -83 }))
 
     // define reactangular areas in the game (pitch, goals, areas, etc)
-    this.setAreas()
+    this.areas = {
+      pitch: this.addChild(rectangle(-228, -342, 456, 684, 0x333333, 0x000000, 1, PIXI.blendModes.ADD)),
+      areaN: this.addChild(rectangle(-148, -342, 296, 100, 0xff0000, 0x000000, 1, PIXI.blendModes.ADD)),
+      areaS: this.addChild(rectangle(-148, 342-100, 296, 100, 0xff0000, 0x000000, 1, PIXI.blendModes.ADD)),
+      goalN: this.addChild(rectangle(-34, -342-34, 68, 34, 0x0000ff, 0x000000, 1, PIXI.blendModes.ADD)),
+      goalS: this.addChild(rectangle(-34, 342, 68, 34, 0x0000ff, 0x000000, 1, PIXI.blendModes.ADD))
+    }
+
+    for (let id in this.areas) {
+      this.areas[id].visible = Options.display.areas
+    }
+
 
     // create layer containers to hold sortable elements
     this.background = this.addChild(new PIXI.Container())
@@ -46,25 +73,110 @@ export class Game extends PIXI.Container {
   }
 
 
-  setAreas() {
-    this.areas = {
-      pitch: this.addChild(rectangle(-228, -342, 456, 684, 0x333333, 0x000000, 1, PIXI.blendModes.ADD)),
-      areaN: this.addChild(rectangle(-148, -342, 296, 100, 0xff0000, 0x000000, 1, PIXI.blendModes.ADD)),
-      areaS: this.addChild(rectangle(-148, 342-100, 296, 100, 0xff0000, 0x000000, 1, PIXI.blendModes.ADD)),
-      goalN: this.addChild(rectangle(-34, -342-34, 68, 34, 0x0000ff, 0x000000, 1, PIXI.blendModes.ADD)),
-      goalS: this.addChild(rectangle(-34, 342, 68, 34, 0x0000ff, 0x000000, 1, PIXI.blendModes.ADD))
-    }
+  // =================================
+  // Game state checks
+  // =================================
 
-    for (let id in this.areas) {
-      this.areas[id].visible = Options.display.areas
-    }
+  isIdle() {
+    return this.isOut() ||
+    this.state === GameStates.goal ||
+    this.state === GameStates.fault ||
+    this.state === GameStates.penalty
+  }
+
+  isOut() {
+    const out =
+      this.state === GameStates.out ||
+      this.state === GameStates.corner ||
+      this.state === GameStates.goalKick
+    return out
+  }
+
+  // =================================
+  // Game Events
+  // =================================
+
+  kickoff() {
+    console.log('kickoff')
+    this.ball.reset()
+    this.wait(0.2, () => {
+      this.state = GameStates.kickoff
+      Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    })
+  }
+
+  out() {
+    console.log('out')
+    this.state = GameStates.out
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
+
+  }
+
+  corner() {
+    console.log('corner')
+    this.state = GameStates.corner
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
+  }
+
+  goalKick() {
+    console.log('goalKick')
+    this.state = GameStates.goalKick
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
+  }
+
+  goal() {
+    console.log('goal')
+    this.state = GameStates.goal
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
+  }
+
+  fault() {
+    console.log('fault')
+    this.state = GameStates.fault
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
+  }
+
+  penalty() {
+    console.log('penalty')
+    this.state = GameStates.penalty
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+    this.wait(0.2, () => {
+      this.kickoff()
+    })
   }
 
 
+  // =================================
+  // Game Render
+  // =================================
+
+  render() {
+    this.setActivePlayer()
+  }
+
+  wait(time, cb) {
+    window.setTimeout(cb, time * 1000)
+  }
+
   setActivePlayer() {
-    if (this.ball.isInactive()) {
-      return
-    }
+    // if (this.ball.isInactive()) {
+    //   return
+    // }
 
     // get nearest player to the ball
     const player = this.getNearestPlayerTo(this.players, this.ball)
@@ -95,14 +207,10 @@ export class Game extends PIXI.Container {
     return nearestPlayer
   }
 
-  render() {
-    this.setActivePlayer()
-  }
 
 
-  wait(time, cb) {
-    window.setTimeout(cb, time * 1000)
-  }
+
+
 
 }
 
