@@ -106,17 +106,13 @@ export class PlayerAnimation extends PIXI.Container {
     }
 
     if (this.player.action === Actions.run) {
+      const volume = this.player === this.game.player ? 0.2 + Math.random() * 0.2 : 0.05 // + Math.random() * 0.1
+      const pitch = 2.0 + Math.random() * 0.5
       if (anim.currentFrame === 2 || anim.currentFrame === 6) {
-        Audio.play(Audio.sfx.step,
-          0.2 + Math.random() * 0.2, // volume
-          2.0 + Math.random() * 1.0  // speed
-        )
+        Audio.play(Audio.sfx.step, volume, pitch)
       } else if (this.player.action === Actions.idle) {
         if (anim.currentFrame === 0) {
-          Audio.play(Audio.sfx.step,
-            0.2 + Math.random() * 0.2, // volume
-            2.0 + Math.random() * 1.0  // speed
-          )
+          Audio.play(Audio.sfx.step, volume, pitch)
         }
       }
     }

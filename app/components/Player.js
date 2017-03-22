@@ -29,7 +29,7 @@ export class Player extends PIXI.Container {
 
     // create player label
     const style = {font:"10px Arial", fill:"white", stroke:'black', strokeThickness: 1, align:"center"}
-    this.label = this.addChild(new PIXI.Text(this.num, style))
+    this.label = this.addChild(new PIXI.Text(this.num + 1, style))
     this.label.anchor.set(0.5, 1.7)
     this.label.visible = Options.display.labels.player
 
@@ -75,11 +75,30 @@ export class Player extends PIXI.Container {
 
 
   gotoTargetPoint(point) {
+    const dist = getDistance(this.position, point)
+    if (dist <= this.speed) { return }
+
     this.targetPoint = point
-    this.increments = {
-      x: ((point.x - this.x) / 100), //* this.speed,
-      y: ((point.y - this.y) / 100) //* this.speed,
-    }
+    const distx = point.x - this.x
+    const disty = point.y - this.y
+
+    const dx = distx === 0 ? 0 : distx * this.speed / 100
+    const dy = disty === 0 ? 0 : disty * this.speed / 100
+
+    //const dx = distx === 0 ? 0 : (distx / 100) * this.speed
+    //const dy = disty === 0 ? 0 : (disty / 100) * this.speed
+
+    this.increments = { x: dx, y: dy }
+
+    console.log(dx, dy)
+
+    //console.log(distx, dx)
+    //   x: ((point.x - this.x) / 100), //* this.speed,
+    //   y: ((point.y - this.y) / 100) //* this.speed,
+    // }
+
+    // 1 --- speedx
+    // distx -- n
 
     this.action = Actions.run
     this.direction = this.team.side
@@ -89,12 +108,11 @@ export class Player extends PIXI.Container {
     if (!this.targetPoint) { return }
 
     const dist = getDistance(this.position, this.targetPoint)
-    console.log(dist)
 
-    if (dist <= 4) {
-      //this.position = this.targetPoint
+    if (dist <= this.speed * 2) {
+      this.position = this.targetPoint
       this.stop()
-      //this.targetPoint = null
+      this.targetPoint = null
     }
   }
 
@@ -137,6 +155,7 @@ export class Player extends PIXI.Container {
 
 
   updateFormation(time) {
+    //this.num === 10 &&
     if (this !== this.game.player && this.action === Actions.idle) {
       const formation = this.team.formation.positions[this.num]
       this.gotoTargetPoint({
