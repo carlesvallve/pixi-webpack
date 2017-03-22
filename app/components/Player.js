@@ -3,7 +3,7 @@ import Audio from './Audio'
 import PlayerAnimation from './PlayerAnimation'
 import { Options, Sides, Actions, Directions, DirectionVectors } from './lib/enums'
 import { getDistance } from './lib/geometry'
-import { randomInt } from './lib/random'
+import { randomInt, randomNumber } from './lib/random'
 
 
 export class Player extends PIXI.Container {
@@ -35,6 +35,8 @@ export class Player extends PIXI.Container {
 
 
     this.hasBall = false
+
+    this.updateFormation(randomNumber(1, 3))
   }
 
   select() {
@@ -55,33 +57,49 @@ export class Player extends PIXI.Container {
     return this.game.ball.owner = this
   }
 
-  move(direction) {
+
+  moveInDirection(direction) {
     this.action = Actions.run
     this.direction = direction
 
     const inc = DirectionVectors[this.direction]
     this.increments = { x: inc.x * this.speed, y: inc.y * this.speed }
+  }
+
+
+  moveByIncrements() {
+    // move player by his increments
+    if (this.increments === undefined) { return }
     this.position.set(this.x + this.increments.x, this.y + this.increments.y)
   }
 
-  gotoPoint(point) {
-    //this.action = Actions.run
 
-    const inc = {
-      x: (point.x - this.x) / 10,
-      y: (point.y - this.y) / 10,
+  gotoTargetPoint(point) {
+    this.targetPoint = point
+    this.increments = {
+      x: ((point.x - this.x) / 100), //* this.speed,
+      y: ((point.y - this.y) / 100) //* this.speed,
     }
 
-    // this.direction = direction
-    //
-    // const inc = DirectionVectors[this.direction]
-    this.increments = { x: inc.x * this.speed, y: inc.y * this.speed }
-    this.position.set(this.x + this.increments.x, this.y + this.increments.y)
+    this.action = Actions.run
+    this.direction = this.team.side
+  }
+
+  arriveToTargetPoint() {
+    if (!this.targetPoint) { return }
+
+    const dist = getDistance(this.position, this.targetPoint)
+    console.log(dist)
+
+    if (dist <= 4) {
+      //this.position = this.targetPoint
+      this.stop()
+      //this.targetPoint = null
+    }
   }
 
 
   ballControl() {
-
     if (this === this.game.ball.shooter) { return }
     if (this !== this.game.player) {
       return
@@ -112,16 +130,37 @@ export class Player extends PIXI.Container {
   render() {
     this.label.style.fill = (this === this.game.ball.owner) ? 'yellow' : 'white'
     this.ballControl()
+    this.updateFormation()
+    this.moveByIncrements()
+    this.arriveToTargetPoint()
+  }
 
-    if (this !== this.game.player) {
+
+  updateFormation(time) {
+    if (this !== this.game.player && this.action === Actions.idle) {
       const formation = this.team.formation.positions[this.num]
-      this.gotoPoint({
+      this.gotoTargetPoint({
         x: formation.x,
         y: this.team.baseY + formation.y * this.team.separationY
       })
     }
+
+    // this.game.wait(time, ()=> {
+    //
+    //   //if (this !== this.game.player) {
+    //     const formation = this.team.formation.positions[this.num]
+    //     this.gotoTargetPoint({
+    //       x: formation.x,
+    //       y: this.team.baseY + formation.y * this.team.separationY
+    //     })
+    //   //}
+    //
+    //   this.updateFormation(randomNumber(1, 3))
+    // })
   }
 
+
+  //this.moveByIncrements(this.increments)
 }
 
 export default Player

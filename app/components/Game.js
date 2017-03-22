@@ -142,10 +142,6 @@ export class Game extends PIXI.Container {
     console.log(e, props)
     this.state = GameStates.goal
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-
-    //const { player } = props
-    //player.team.score += 1
-
     this.wait(0.2, () => {
       this.kickoff()
     })

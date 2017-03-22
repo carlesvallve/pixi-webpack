@@ -77,7 +77,7 @@ export class Keyboard {
     if (dir === null) {
       game.player.stop()
     } else {
-      game.player.move(dir)
+      game.player.moveInDirection(dir)
     }
 
     // set action
