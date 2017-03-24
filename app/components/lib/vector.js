@@ -4,149 +4,150 @@
  * @param x {Number} position of the point
  * @param y {Number} position of the point
  */
-PIXI.Vector = function(x, y)
-{
+export class Vector {
+
+  constructor(x, y) {
     /**
-     * @property x
-     * @type Number
-     * @default 0
-     */
+    * @property x
+    * @type Number
+    * @default 0
+    */
     this.x = x || 0;
 
     /**
-     * @property y
-     * @type Number
-     * @default 0
-     */
+    * @property y
+    * @type Number
+    * @default 0
+    */
     this.y = y || 0;
-};
+  }
 
-/**
- * Creates a clone of this point
- *
- * @method clone
- * @return {Vector} a copy of the point
- */
-PIXI.Vector.prototype.clone = function()
-{
-    return new PIXI.Vector(this.x, this.y);
-};
+  /**
+   * Creates a clone of this point
+   *
+   * @method clone
+   * @return {Vector} a copy of the point
+   */
+  clone() {
+    return new Vector(this.x, this.y);
+  }
 
-PIXI.Vector.prototype.add = function(v) {
+  add() {
     this.x += v.x;
     this.y += v.y;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.sub = function(v) {
+  sub() {
     this.x -= v.x;
     this.y -= v.y;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.invert = function(v) {
+  invert() {
     this.x *= -1;
     this.y *= -1;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.multiplyScalar = function(s) {
+  multiplyScalar(s) {
     this.x *= s;
     this.y *= s;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.divideScalar = function(s) {
+  divideScalar(s) {
     if(s === 0) {
-        this.x = 0;
-        this.y = 0;
+      this.x = 0;
+      this.y = 0;
     } else {
-        var invScalar = 1 / s;
-        this.x *= invScalar;
-        this.y *= invScalar;
+      var invScalar = 1 / s;
+      this.x *= invScalar;
+      this.y *= invScalar;
     }
     return this;
-};
+  }
 
-PIXI.Vector.prototype.dot = function(v) {
+  dot() {
     return this.x * v.x + this.y * v.y;
-};
+  }
 
-PIXI.Vector.prototype.length = function(v) {
+  length() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
-};
+  }
 
-PIXI.Vector.prototype.lengthSq = function() {
+  lengthSq() {
     return this.x * this.x + this.y * this.y;
-};
+  }
 
-PIXI.Vector.prototype.normalize = function() {
+  normalize() {
     return this.divideScalar(this.length());
-};
+  }
 
-PIXI.Vector.prototype.distanceTo = function(v) {
+  distanceTo() {
     return Math.sqrt(this.distanceToSq(v));
-};
+  }
 
-PIXI.Vector.prototype.distanceToSq = function(v) {
+  distanceToSq() {
     var dx = this.x - v.x, dy = this.y - v.y;
     return dx * dx + dy * dy;
-};
+  }
 
-PIXI.Vector.prototype.set = function(x, y) {
+  set(x, y) {
     this.x = x;
     this.y = y;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.setX = function(x) {
+  setX(x) {
     this.x = x;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.setY = function(y) {
+  setY(y) {
     this.y = y;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.setLength = function(l) {
+  setLength(l) {
     var oldLength = this.length();
     if(oldLength !== 0 && l !== oldLength) {
-        this.multiplyScalar(l / oldLength);
+      this.multiplyScalar(l / oldLength);
     }
     return this;
-};
+  }
 
-PIXI.Vector.prototype.invert = function(v) {
+  invert() {
     this.x *= -1;
     this.y *= -1;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.lerp = function(v, alpha) {
+  lerp(v, alpha) {
     this.x += (v.x - this.x) * alpha;
     this.y += (v.y - this.y) * alpha;
     return this;
-};
+  }
 
-PIXI.Vector.prototype.rad = function() {
+  rad() {
     return Math.atan2(this.x, this.y);
-};
+  }
 
-PIXI.Vector.prototype.deg = function() {
+  deg() {
     return this.rad() * 180 / Math.PI;
-};
+  }
 
-PIXI.Vector.prototype.equals = function(v) {
+  equals() {
     return this.x === v.x && this.y === v.y;
-};
+  }
 
-PIXI.Vector.prototype.rotate = function(theta) {
+  rotate(theta) {
     var xtemp = this.x;
     this.x = this.x * Math.cos(theta) - this.y * Math.sin(theta);
     this.y = xtemp * Math.sin(theta) + this.y * Math.cos(theta);
     return this;
-};
+  }
 
-// constructor
-PIXI.Vector.prototype.constructor = PIXI.Vector;
+}
+
+export default Vector
