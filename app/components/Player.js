@@ -1,9 +1,9 @@
 import pubsub from 'pubsub-js'
-import Audio from './Audio'
+import Audio  from './Audio'
 import PlayerAnimation from './PlayerAnimation'
 import { Options, Sides, Actions, Directions, DirectionVectors } from './lib/enums'
-import { getDistance } from './lib/geometry'
 import { randomInt, randomNumber } from './lib/random'
+import { getVector, getDistance }  from './lib/geometry'
 
 
 export class Player extends PIXI.Container {
@@ -22,7 +22,7 @@ export class Player extends PIXI.Container {
     this.direction = this.side
     this.position.set(props.x, props.y)
     this.speed = props.speed || 2 + Math.random() * 1
-    this.inc = { x: 0, y: 0 }
+    this.increments = { x: 0, y: 0 }
 
     // create player animated sprite
     this.sprite = this.addChild(new PlayerAnimation({ player: this }))
@@ -69,65 +69,48 @@ export class Player extends PIXI.Container {
 
   moveByIncrements() {
     // move player by his increments
-    if (this.increments === undefined) { return }
     this.position.set(this.x + this.increments.x, this.y + this.increments.y)
   }
 
 
   gotoTargetPoint(point) {
-    const dist = getDistance(this.position, point)
-    if (dist <= this.speed) { return }
+    const vec = getVector(this.position, point)
+    if (vec.length() === 0) { return }
 
-    this.targetPoint = point
-    const distx = point.x - this.x
-    const disty = point.y - this.y
-
-    const dx = distx === 0 ? 0 : distx * this.speed / 100
-    const dy = disty === 0 ? 0 : disty * this.speed / 100
-
-    //const dx = distx === 0 ? 0 : (distx / 100) * this.speed
-    //const dy = disty === 0 ? 0 : (disty / 100) * this.speed
-
-    this.increments = { x: dx, y: dy }
-
-    console.log(dx, dy)
-
-    //console.log(distx, dx)
-    //   x: ((point.x - this.x) / 100), //* this.speed,
-    //   y: ((point.y - this.y) / 100) //* this.speed,
-    // }
-
-    // 1 --- speedx
-    // distx -- n
+    vec.normalize()
+    vec.multiplyScalar(this.speed)
 
     this.action = Actions.run
+    this.increments = { x: vec.x, y: vec.y }
     this.direction = this.team.side
+    this.targetPoint = point
   }
+
+
 
   arriveToTargetPoint() {
     if (!this.targetPoint) { return }
 
+    const step = { x: this.x + this.increments.x, y: this.y + this.increments.y }
     const dist = getDistance(this.position, this.targetPoint)
+    const distStep = getDistance(this.position, step)
 
-    if (dist <= this.speed * 2) {
+    if (dist < distStep) {
       this.position = this.targetPoint
       this.stop()
       this.targetPoint = null
+      this.increments = { x: 0, y: 0 }
     }
   }
 
 
   ballControl() {
     if (this === this.game.ball.shooter) { return }
-    if (this !== this.game.player) {
-      return
-    }
+    if (this !== this.game.player) { return }
 
-    const ball = this.game.ball
     const dist = getDistance(this.position, this.game.ball.position)
-
     if (dist <= 16) {
-      ball.setBallControl(this)
+      this.game.ball.setBallControl(this)
     }
   }
 
@@ -140,6 +123,9 @@ export class Player extends PIXI.Container {
     const d = randomInt(200, 200)
     const inc = DirectionVectors[this.direction]
     const vec = { x: inc.x * d, y: inc.y * d }
+
+    this.game.player = null
+    this.action = Actions.idle
 
     this.game.ball.setBallKick(vec)
   }
@@ -155,31 +141,15 @@ export class Player extends PIXI.Container {
 
 
   updateFormation(time) {
-    //this.num === 10 &&
-    if (this !== this.game.player && this.action === Actions.idle) {
+    if (this !== this.game.ball.owner && this.action === Actions.idle) {
       const formation = this.team.formation.positions[this.num]
       this.gotoTargetPoint({
         x: formation.x,
         y: this.team.baseY + formation.y * this.team.separationY
       })
     }
-
-    // this.game.wait(time, ()=> {
-    //
-    //   //if (this !== this.game.player) {
-    //     const formation = this.team.formation.positions[this.num]
-    //     this.gotoTargetPoint({
-    //       x: formation.x,
-    //       y: this.team.baseY + formation.y * this.team.separationY
-    //     })
-    //   //}
-    //
-    //   this.updateFormation(randomNumber(1, 3))
-    // })
   }
 
-
-  //this.moveByIncrements(this.increments)
 }
 
 export default Player

@@ -145,7 +145,7 @@ export class Ball extends PIXI.Container {
 
     Audio.playRandom(Audio.sfx.kick,
       0.2 + Math.random() * 0.2, // volume
-      1.0 // + Math.random() * 1.0  // speed
+      1.0 + Math.random() * 1.0  // speed
     )
   }
 

@@ -18,7 +18,10 @@ export class Team {
 
     this.setFormation()
     this.createPlayers()
-    this.selectPlayer(this.players.length - 1)
+
+    if (this.players.length > 0) {
+      this.selectPlayer(this.players.length - 1)
+    }
 
     console.log('Team', this.color, this.formation.id)
   }
@@ -39,8 +42,8 @@ export class Team {
 
   createPlayers() {
     this.players = []
-
-    for (let i = 0; i < this.formation.positions.length; i++) {
+    const count = this.formation.positions.length // this.side === Sides.N ? 0 : 1 //
+    for (let i = 0; i < count; i++) {
       const player = this.game.foreground.addChild(new Player({
         game: this.game,
         team: this,
