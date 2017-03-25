@@ -81,7 +81,7 @@ export const getFormation = (id, direction) => {
 
 
 export const getRandomFormation = (direction) => {
-  const formationArr = [442, 433, 352]
+  const formationArr = [442, 433, 352, 532]
   const id = formationArr[randomInt(0, formationArr.length - 1)]
   return getFormation(id, direction)
 }

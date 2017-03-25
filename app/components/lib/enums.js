@@ -7,6 +7,10 @@ export const Options = {
     labels: {
       player: true
     }
+  },
+  audio: {
+    enabled: true,
+    masterVolume: 1
   }
 }
 

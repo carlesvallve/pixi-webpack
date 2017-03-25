@@ -1,7 +1,8 @@
 import { randomInt } from './lib/random'
+import { Options } from './lib/enums'
 
 // Settings
-const masterVolume = 1
+const { enabled, masterVolume } = Options.audio
 
 const Audio = {
 
@@ -78,6 +79,8 @@ const Audio = {
   // Methods
 
   play: (sound, volume = 1, speed = 1, loop = false) => {
+    if (!enabled) { return }
+
     sound.volume = volume * masterVolume
     sound.speed = speed
     sound.loop = loop
@@ -85,6 +88,8 @@ const Audio = {
   },
 
   playRandom: (soundType, volume = 1, speed = 1, loop = false) => {
+    if (!enabled) { return }
+
     const sound = soundType[randomInt(0, soundType.length - 1)]
     sound.volume = volume * masterVolume
     sound.speed = speed
