@@ -79,7 +79,7 @@ export class Player extends PIXI.Container {
 
   gotoTargetPoint(point) {
     // TODO: figure out a way to be able to kill timeout references if necessary
-    this.game.wait(randomNumber(0, 1), () => {
+    //this.game.wait(randomNumber(0, 1), () => {
 
       const vec = getVector(this.position, point)
       if (vec.length() === 0) { return }
@@ -92,7 +92,7 @@ export class Player extends PIXI.Container {
       this.direction = this.team.side
       this.targetPoint = point
 
-    })
+    //})
   }
 
 
