@@ -3,7 +3,7 @@ import Audio  from './Audio'
 import PlayerAnimation from './PlayerAnimation'
 import { Options, Sides, Actions, Directions, DirectionVectors, VectorDirections } from './lib/enums'
 import { randomInt, randomNumber } from './lib/random'
-import { getVector, getDistance }  from './lib/geometry'
+import { getVector, getDistance, getRandomPointInRadius }  from './lib/geometry'
 import Vector from './lib/vector'
 
 
@@ -25,6 +25,10 @@ export class Player extends PIXI.Container {
     this.speed = props.speed || 2 + Math.random() * 1
     this.increments = new Vector(0, 0) //{ x: 0, y: 0 }
 
+    this.radius = 48
+    this.formationUpdateTime = { min: 1.0, max: 6.0 }
+    this.updateTimeout = null
+
     // create player animated sprite
     this.sprite = this.addChild(new PlayerAnimation({ player: this }))
 
@@ -35,9 +39,18 @@ export class Player extends PIXI.Container {
     this.label.visible = Options.display.labels.player
 
 
-    this.hasBall = false
+    //this.hasBall = false
+  }
 
-    this.updateFormation(randomNumber(1, 3))
+  play() {
+    this.targetPoint = this.getFormationPos(false)
+
+    this.updateFormation(
+      randomNumber(
+        this.formationUpdateTime.min,
+        this.formationUpdateTime.max
+      )
+    )
   }
 
   select() {
@@ -82,7 +95,10 @@ export class Player extends PIXI.Container {
     //this.game.wait(randomNumber(0, 1), () => {})
 
     const vec = getVector(this.position, point)
-    if (vec.length() === 0) { return }
+    if (vec.length() === 0) {
+      this.targetPoint = point
+      return
+    }
 
     vec.normalize()
     vec.multiplyScalar(this.speed)
@@ -94,21 +110,29 @@ export class Player extends PIXI.Container {
   }
 
 
-
-  arriveToTargetPoint() {
-    if (!this.targetPoint) { return }
+  updateMoveToTargetPoint() {
+    //if (!this.targetPoint) { return }
 
     const step = { x: this.x + this.increments.x, y: this.y + this.increments.y }
     const dist = getDistance(this.position, this.targetPoint)
     const distStep = getDistance(this.position, step)
 
     if (dist < distStep) {
-      this.position = this.targetPoint
-      this.stop()
-      this.targetPoint = null
-      this.increments.set(0, 0)
-      this.direction = this.team.side
+      this.arriveToTargetPoint()
     }
+  }
+
+  arriveToTargetPoint() {
+    this.position = this.targetPoint
+    this.stop()
+    //this.targetPoint = null
+    this.increments.set(0, 0)
+    this.direction = this.team.side
+
+    // if we are in kickoff phase, count each player that has arrived to formation
+    // if (this.game.isIdle()) {
+    //   pubsub.publish('arrivedToFormation', { player: this })
+    // }
   }
 
 
@@ -142,21 +166,55 @@ export class Player extends PIXI.Container {
   render() {
     this.label.style.fill = (this === this.game.player) ? 'yellow' : 'white'
     this.ballControl()
-    this.updateFormation()
+    //this.updateFormation()
     this.moveByIncrements()
-    this.arriveToTargetPoint()
+    this.updateMoveToTargetPoint()
+    //this.updateKickoffPhase()
   }
 
 
   updateFormation(time) {
-    if (this !== this.game.ball.owner && this.action === Actions.idle) {
-      const formation = this.team.formation.positions[this.num]
-      this.gotoTargetPoint({
-        x: formation.x,
-        y: this.team.baseY + formation.y * this.team.separationY
-      })
-    }
+    //this.game.wait(time, () => {
+    this.updateTimeout = window.setTimeout(() => {
+      if (this !== this.game.ball.owner && this.action === Actions.idle) {
+        const p = this.getFormationPos(true)
+        this.gotoTargetPoint(p)
+      }
+
+      this.updateFormation(
+        randomNumber(this.formationUpdateTime.min, this.formationUpdateTime.max)
+      )
+    }, time * 1000)
+
+
+    //})
   }
+
+  getFormationPos (randomize = false) {
+    const formationPos = this.team.formation.positions[this.num]
+
+    let p = {
+      x: formationPos.x,
+      y: this.team.baseY + formationPos.y * this.team.separationY
+    }
+
+    if (randomize) {
+      p = getRandomPointInRadius(p, this.radius, this.num === 0)
+    }
+
+    return p
+  }
+
+
+  // updateKickoffPhase() {
+  //    if (!this.game.isIdle()) { return }
+  //
+  //   const dist = getDistance(this.position, this.targetPoint)
+  //   if (dist === 0) {
+  //     pubsub.publish('arrivedToFormation', { player: this })
+  //   }
+  // }
+
 
 }
 

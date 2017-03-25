@@ -2,7 +2,9 @@
 import Audio from './Audio'
 import Player from './Player'
 import { Sides } from './lib/enums'
+import { randomNumber, randomInt } from './lib/random'
 import { getFormation, getRandomFormation } from './lib/formations'
+
 
 
 export class Team {
@@ -57,8 +59,24 @@ export class Team {
     }
   }
 
-  gotoFormation () {
+  kickoff () {
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i]
 
+      window.clearTimeout(player.updateTimeout)
+
+      window.setTimeout(() => {
+        const p = player.getFormationPos(false)
+        player.gotoTargetPoint(p)
+      }, randomInt(0, 500))
+    }
+  }
+
+  play() {
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i]
+      player.play()
+    }
   }
 
   setAttacking() {

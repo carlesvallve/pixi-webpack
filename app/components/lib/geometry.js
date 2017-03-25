@@ -1,4 +1,5 @@
 import Vector from './vector.js'
+import { randomInt } from './random'
 
 export const getVector = (pos1, pos2) => {
   const x = pos2.x - pos1.x
@@ -22,6 +23,22 @@ export const getBounds = (rect) => {
     top: rect.position.y,
     bottom: rect.position.y + bounds.height
   }
+}
+
+
+export const getRandomPointInRadius = (point, radius, onlyHorizontal = false) => {
+  //var pt_angle = Math.random() * 2 * Math.PI;
+  //var pt_radius_sq = Math.random() * radius * radius;
+  //var pt_x = Math.sqrt(pt_radius_sq) * Math.cos(pt_angle);
+  //var pt_y = Math.sqrt(pt_radius_sq) * Math.sin(pt_angle);
+
+  // You can avoid square / squareRoot
+  const pt_angle = Math.random() * 2 * Math.PI;
+  const r =randomInt(16, radius) // * radius
+  const x = point.x + r * Math.cos(pt_angle);
+  const y = point.y + r * Math.sin(pt_angle);
+
+  return new Vector(x, onlyHorizontal ? point.y : y)
 }
 
 /**

@@ -14,7 +14,7 @@ export class World extends PIXI.Container {
 
     this.center = { x: props.x, y: props.y }
     this.position.set(props.x, props.y)
-    this.scale.set(1.0)
+    this.scale.set(0.8)
 
     // create game
     this.game = this.addChild(new Game({ world: this.world }))

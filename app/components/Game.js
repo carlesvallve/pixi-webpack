@@ -25,12 +25,14 @@ export class Game extends PIXI.Container {
     pubsub.subscribe('fault',     this.fault.bind(this))
     pubsub.subscribe('penalty',   this.penalty.bind(this))
 
+    //pubsub.subscribe('arrivedToFormation', this.arrivedToFormation.bind(this))
+
     // create game elements
     this.initElements()
 
     // start game
     this.player = null
-    this.kickoff()
+    //this.kickoff()
   }
 
   // =================================
@@ -65,6 +67,8 @@ export class Game extends PIXI.Container {
     // TODO; probably we should organize this by side or color.
     //we also need a way to determine in which direction the team is attacking
     this.players = [] // array that holds all players from both teams
+    this.playersOutOfFormation = []
+
     this.teams = [
       new Team({ game: this, side: Sides.N, color: 'red' }),
       new Team({ game: this, side: Sides.S, color: 'blue' })
@@ -75,6 +79,9 @@ export class Game extends PIXI.Container {
     // create goals
     this.goalNSprite = this.foreground.addChild(new Goal({ side: Sides.N, x: 0, y: -342 }))
     this.goalSSprite = this.foreground.addChild(new Goal({ side: Sides.S, x: 0, y: 342 }))
+
+    // start game
+    this.play()
   }
 
 
@@ -84,6 +91,7 @@ export class Game extends PIXI.Container {
 
   isIdle() {
     return this.isOut() ||
+    this.state === GameStates.kickoff ||
     this.state === GameStates.goal ||
     this.state === GameStates.fault ||
     this.state === GameStates.penalty
@@ -98,17 +106,56 @@ export class Game extends PIXI.Container {
   }
 
   // =================================
-  // Game Events
+  // Kickoff
   // =================================
 
   kickoff() {
+    // reset game and make players go back to formations
+    this.state = GameStates.kickoff
     console.log('kickoff')
+
     this.ball.reset()
-    this.wait(0.2, () => {
-      this.state = GameStates.kickoff
-      Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
-    })
+    this.teams[0].kickoff()
+    this.teams[1].kickoff()
+    this.playersOutOfFormation = this.players.slice(0) // clone the array
+    this.player = null
   }
+
+  updateKickoffPhase() {
+    if (this.state !== GameStates.kickoff) {
+      return
+    }
+
+    // wait for all players to return to their original formation position
+    for (let i = 0; i < this.playersOutOfFormation.length; i++) {
+      const player = this.playersOutOfFormation[i]
+      const dist = getDistance(player.position, player.targetPoint)
+      if (dist === 0) {
+        this.playersOutOfFormation.splice(i, 1);
+      }
+    }
+
+    //console.log(this.playersOutOfFormation.length)
+    if (this.playersOutOfFormation.length === 0) {
+      this.play()
+    }
+  }
+
+  play() {
+    // start active game, enable controls and players ai, etc
+    this.state = GameStates.play
+    Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
+
+    this.teams[0].play()
+    this.teams[1].play()
+
+    console.log('play!')
+  }
+
+
+  // =================================
+  // Game Events
+  // =================================
 
   out(e, props) {
     console.log(e, props)
@@ -171,6 +218,7 @@ export class Game extends PIXI.Container {
   // =================================
 
   render() {
+    this.updateKickoffPhase()
     this.setActivePlayer()
   }
 
@@ -178,14 +226,25 @@ export class Game extends PIXI.Container {
     window.setTimeout(cb, time * 1000)
   }
 
+  // isIdle() {
+  //   return this.state === GameStates.idle
+  // }
+
 
   // =================================
   // Game functions
   // =================================
 
   setActivePlayer() {
+    if (this.isIdle()) { return }
+
+    // escape if we are actively controlling the selected player
+    if (this.player && this.player.increments.length() > 0) {
+      return
+    }
+
     // get nearest player to the ball
-    const player = this.getNearestPlayerTo(this.players, this.ball)
+    const player = this.getNearestPlayerToPoint(this.players, this.ball.position)
 
     if (player !== null && player !== this.player) {
       // reset old active player
@@ -200,12 +259,12 @@ export class Game extends PIXI.Container {
   }
 
 
-  getNearestPlayerTo(players, element) {
+  getNearestPlayerToPoint(players, point) {
     let nearestPlayer = null
     let d = 1000
 
     for (let i = 0; i < players.length; i++) {
-      const dist = getDistance(players[i].position, element.position)
+      const dist = getDistance(players[i].position, point)
       if (dist < d) {
         d = dist
         nearestPlayer = players[i]

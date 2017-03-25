@@ -63,9 +63,12 @@ export class Keyboard {
 
 
   updateUserControls(game) {
+
     if (!game.player) {
       return
     }
+
+    //console.log('keyboard', game.isIdle())
 
     if (game.isIdle()) {
       game.player.stop()
@@ -74,6 +77,10 @@ export class Keyboard {
 
     // set direction
     const dir = this.getDirection()
+
+
+
+
     if (dir === null) {
       game.player.stop()
     } else {
