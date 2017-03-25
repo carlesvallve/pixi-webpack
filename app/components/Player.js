@@ -4,6 +4,7 @@ import PlayerAnimation from './PlayerAnimation'
 import { Options, Sides, Actions, Directions, DirectionVectors } from './lib/enums'
 import { randomInt, randomNumber } from './lib/random'
 import { getVector, getDistance }  from './lib/geometry'
+import Vector from './lib/vector'
 
 
 export class Player extends PIXI.Container {
@@ -22,7 +23,7 @@ export class Player extends PIXI.Container {
     this.direction = this.side
     this.position.set(props.x, props.y)
     this.speed = props.speed || 2 + Math.random() * 1
-    this.increments = { x: 0, y: 0 }
+    this.increments = new Vector(0, 0) //{ x: 0, y: 0 }
 
     // create player animated sprite
     this.sprite = this.addChild(new PlayerAnimation({ player: this }))
@@ -46,7 +47,7 @@ export class Player extends PIXI.Container {
 
   stop() {
     this.action = Actions.idle
-    this.increments = { x: 0, y: 0 }
+    this.increments.set(0, 0)
   }
 
   isSelected() {
@@ -63,27 +64,35 @@ export class Player extends PIXI.Container {
     this.direction = direction
 
     const inc = DirectionVectors[this.direction]
-    this.increments = { x: inc.x * this.speed, y: inc.y * this.speed }
+    this.increments.set(inc.x * this.speed, inc.y * this.speed)
   }
 
 
   moveByIncrements() {
     // move player by his increments
-    this.position.set(this.x + this.increments.x, this.y + this.increments.y)
+    this.position.set(
+      this.x + this.increments.x,
+      this.y + this.increments.y
+    )
   }
 
 
   gotoTargetPoint(point) {
-    const vec = getVector(this.position, point)
-    if (vec.length() === 0) { return }
+    // TODO: figure out a way to be able to kill timeout references if necessary
+    this.game.wait(randomNumber(0, 1), () => {
 
-    vec.normalize()
-    vec.multiplyScalar(this.speed)
+      const vec = getVector(this.position, point)
+      if (vec.length() === 0) { return }
 
-    this.action = Actions.run
-    this.increments = { x: vec.x, y: vec.y }
-    this.direction = this.team.side
-    this.targetPoint = point
+      vec.normalize()
+      vec.multiplyScalar(this.speed)
+
+      this.action = Actions.run
+      this.increments = vec
+      this.direction = this.team.side
+      this.targetPoint = point
+
+    })
   }
 
 
@@ -99,7 +108,7 @@ export class Player extends PIXI.Container {
       this.position = this.targetPoint
       this.stop()
       this.targetPoint = null
-      this.increments = { x: 0, y: 0 }
+      this.increments.set(0, 0)
     }
   }
 
@@ -132,7 +141,7 @@ export class Player extends PIXI.Container {
 
 
   render() {
-    this.label.style.fill = (this === this.game.ball.owner) ? 'yellow' : 'white'
+    this.label.style.fill = (this === this.game.player) ? 'yellow' : 'white'
     this.ballControl()
     this.updateFormation()
     this.moveByIncrements()
