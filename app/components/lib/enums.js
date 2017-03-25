@@ -1,4 +1,5 @@
-import { getVectorAngle } from './geometry'
+
+// GAME OPTIONS
 
 export const Options = {
   display: {
@@ -9,10 +10,14 @@ export const Options = {
   }
 }
 
+
+// DIRECTIONS
+
 export const Sides = {
   N:  'N',
   S: 'S'
 }
+
 
 export const Directions = {
   N:  'N',
@@ -24,6 +29,7 @@ export const Directions = {
   W:  'W',
   NW: 'NW'
 }
+
 
 export const DirectionVectors = {
   N:  { x: 0,  y: -1 },
@@ -51,18 +57,21 @@ export const VectorDirections = (v) => {
   if (ang >= 240 && ang <= 300) { dir = Directions.N  }
   if (ang >= 300 && ang <= 330) { dir = Directions.NE }
 
-  //console.log(ang, dir)
   return dir
 }
 
+
+// STATES AND ACTIONS
+
 export const Actions = {
-  idle: 'idle', // 1 frame
-  run: 'run', // 8 frames
-  kick: 'kick',
-  fall: 'fall', // 3 frames
-  tackle: 'tackle', // 1 frame
-  throw: 'throw' // 3 frames
+  idle: 'idle',     // 1 frames
+  run: 'run',       // 8 frames
+  kick: 'kick',     // ? frames
+  fall: 'fall',     // 3 frames
+  tackle: 'tackle', // 1 frames
+  throw: 'throw'    // 3 frames
 }
+
 
 export const GameStates = {
   idle: 'idle',
