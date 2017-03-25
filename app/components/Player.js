@@ -1,7 +1,7 @@
 import pubsub from 'pubsub-js'
 import Audio  from './Audio'
 import PlayerAnimation from './PlayerAnimation'
-import { Options, Sides, Actions, Directions, DirectionVectors } from './lib/enums'
+import { Options, Sides, Actions, Directions, DirectionVectors, VectorDirections } from './lib/enums'
 import { randomInt, randomNumber } from './lib/random'
 import { getVector, getDistance }  from './lib/geometry'
 import Vector from './lib/vector'
@@ -79,20 +79,18 @@ export class Player extends PIXI.Container {
 
   gotoTargetPoint(point) {
     // TODO: figure out a way to be able to kill timeout references if necessary
-    //this.game.wait(randomNumber(0, 1), () => {
+    //this.game.wait(randomNumber(0, 1), () => {})
 
-      const vec = getVector(this.position, point)
-      if (vec.length() === 0) { return }
+    const vec = getVector(this.position, point)
+    if (vec.length() === 0) { return }
 
-      vec.normalize()
-      vec.multiplyScalar(this.speed)
+    vec.normalize()
+    vec.multiplyScalar(this.speed)
 
-      this.action = Actions.run
-      this.increments = vec
-      this.direction = this.team.side
-      this.targetPoint = point
-
-    //})
+    this.action = Actions.run
+    this.increments = vec
+    this.direction = VectorDirections(vec) // this.team.side
+    this.targetPoint = point
   }
 
 
@@ -109,6 +107,7 @@ export class Player extends PIXI.Container {
       this.stop()
       this.targetPoint = null
       this.increments.set(0, 0)
+      this.direction = this.team.side
     }
   }
 

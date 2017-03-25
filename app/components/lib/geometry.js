@@ -3,7 +3,7 @@ import Vector from './vector.js'
 export const getVector = (pos1, pos2) => {
   const x = pos2.x - pos1.x
   const y = pos2.y - pos1.y
-  return new Vector(x, y) //{ x, y }
+  return new Vector(x, y)
 }
 
 
@@ -12,6 +12,17 @@ export const getDistance = (pos1, pos2) => {
   return vector.length()
 }
 
+
+export const getBounds = (rect) => {
+  const bounds = rect.getLocalBounds()
+
+  return {
+    left: rect.position.x,
+    right: rect.position.x + bounds.width,
+    top: rect.position.y,
+    bottom: rect.position.y + bounds.height
+  }
+}
 
 /**
  * create a 100x100 white rectangle with a 10px black border at position 10,10
@@ -32,16 +43,4 @@ export const rectangle = (x, y, width, height, backgroundColor, borderColor, bor
   }
 
   return box;
-}
-
-
-export const getBounds = (rect) => {
-  const bounds = rect.getLocalBounds()
-
-  return {
-    left: rect.position.x,
-    right: rect.position.x + bounds.width,
-    top: rect.position.y,
-    bottom: rect.position.y + bounds.height
-  }
 }
