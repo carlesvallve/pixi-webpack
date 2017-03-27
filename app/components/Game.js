@@ -17,7 +17,7 @@ export class Game extends PIXI.Container {
 
     // subscribe to game events
     pubsub.subscribe('render',    this.render.bind(this))
-    pubsub.subscribe('kickoff',   this.kickoff.bind(this))
+    pubsub.subscribe('reset',   this.reset.bind(this))
     pubsub.subscribe('out',       this.out.bind(this))
     pubsub.subscribe('corner',    this.corner.bind(this))
     pubsub.subscribe('goalKick',  this.goalKick.bind(this))
@@ -31,8 +31,7 @@ export class Game extends PIXI.Container {
     this.initElements()
 
     // start game
-    this.player = null
-    //this.kickoff()
+    this.reset(Sides.N)
   }
 
   // =================================
@@ -70,8 +69,8 @@ export class Game extends PIXI.Container {
     this.playersOutOfFormation = []
 
     this.teams = [
-      new Team({ game: this, side: Sides.N, color: 'red' }),
-      new Team({ game: this, side: Sides.S, color: 'blue' })
+      new Team({ game: this, side: Sides.N, num: 0, color: 'red' }),
+      new Team({ game: this, side: Sides.S, num: 1, color: 'blue' })
     ]
 
     //this.player = this.foreground.addChild(new Player({ game: this, team: null, x: 0, y: -12 }))
@@ -79,9 +78,6 @@ export class Game extends PIXI.Container {
     // create goals
     this.goalNSprite = this.foreground.addChild(new Goal({ side: Sides.N, x: 0, y: -342 }))
     this.goalSSprite = this.foreground.addChild(new Goal({ side: Sides.S, x: 0, y: 342 }))
-
-    // start game
-    this.play()
   }
 
 
@@ -91,7 +87,7 @@ export class Game extends PIXI.Container {
 
   isIdle() {
     return this.isOut() ||
-    this.state === GameStates.kickoff ||
+    this.state === GameStates.reset ||
     this.state === GameStates.goal ||
     this.state === GameStates.fault ||
     this.state === GameStates.penalty
@@ -109,26 +105,30 @@ export class Game extends PIXI.Container {
   // Kickoff
   // =================================
 
-  kickoff() {
+  reset(side) {
     // reset game and make players go back to formations
-    this.state = GameStates.kickoff
-    console.log('kickoff')
+    this.state = GameStates.reset
+
+    const team = this.getTeamBySide(side)
+    console.log('reset ->', 'side', side, 'team', team.num)
 
     this.ball.reset()
-    this.teams[0].kickoff()
-    this.teams[1].kickoff()
+    this.teams[0].reset(team === this.teams[0])
+    this.teams[1].reset(team === this.teams[1])
     this.playersOutOfFormation = this.players.slice(0) // clone the array
     this.player = null
   }
 
-  updateKickoffPhase() {
-    if (this.state !== GameStates.kickoff) {
+  updateResetPhase() {
+    if (this.state !== GameStates.reset) {
       return
     }
 
     // wait for all players to return to their original formation position
     for (let i = 0; i < this.playersOutOfFormation.length; i++) {
       const player = this.playersOutOfFormation[i]
+      if (player.targetPoint === undefined) { continue }
+
       const dist = getDistance(player.position, player.targetPoint)
       if (dist === 0) {
         this.playersOutOfFormation.splice(i, 1);
@@ -137,8 +137,14 @@ export class Game extends PIXI.Container {
 
     //console.log(this.playersOutOfFormation.length)
     if (this.playersOutOfFormation.length === 0) {
-      this.play()
+      this.kickoff()
     }
+  }
+
+  kickoff() {
+    // select player and wait for user to start playing
+    this.state = GameStates.kickoff
+    console.log('kickoff')
   }
 
   play() {
@@ -162,7 +168,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.out
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(this.getOppositeSide(props.player.team.side))
     })
 
   }
@@ -172,7 +178,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.corner
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(props.side)
     })
   }
 
@@ -181,7 +187,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.goalKick
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(props.side)
     })
   }
 
@@ -190,7 +196,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.goal
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(this.getOppositeSide(props.player.team.side))
     })
   }
 
@@ -199,7 +205,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.fault
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(this.getOppositeSide(props.player.team.side))
     })
   }
 
@@ -208,7 +214,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.penalty
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.kickoff()
+      this.reset(this.getOppositeSide(props.player.team.side))
     })
   }
 
@@ -218,7 +224,7 @@ export class Game extends PIXI.Container {
   // =================================
 
   render() {
-    this.updateKickoffPhase()
+    this.updateResetPhase()
     this.setActivePlayer()
   }
 
@@ -226,20 +232,16 @@ export class Game extends PIXI.Container {
     window.setTimeout(cb, time * 1000)
   }
 
-  // isIdle() {
-  //   return this.state === GameStates.idle
-  // }
-
 
   // =================================
   // Game functions
   // =================================
 
   setActivePlayer() {
-    if (this.isIdle()) { return }
+    if (this.isIdle() && this.state !== GameStates.kickoff) { return }
 
     // escape if we are actively controlling the selected player
-    if (this.player && this.player.increments.length() > 0) {
+    if (this.player && this.player.increments.length() > 0 && this.ball.targetPoint === null) {
       return
     }
 
@@ -272,6 +274,19 @@ export class Game extends PIXI.Container {
     }
 
     return nearestPlayer
+  }
+
+  getOppositeTeam(player) {
+    return player.team.num === 0 ? this.teams[1] : this.teams[0]
+  }
+
+  getOppositeSide(side) {
+    return side === Sides.N ? Sides.S : Sides.N
+  }
+
+  getTeamBySide(side) {
+    if (this.teams[0].side === side) { return this.teams[0] }
+    return this.teams[1]
   }
 
 }

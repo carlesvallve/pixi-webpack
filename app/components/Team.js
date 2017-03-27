@@ -14,6 +14,7 @@ export class Team {
 
     this.game = props.game
     this.side = props.side
+    this.num = props.num
     this.color = props.color
 
     this.score = 0
@@ -59,14 +60,25 @@ export class Team {
     }
   }
 
-  kickoff () {
+  reset(active = false) {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i]
 
       window.clearTimeout(player.updateTimeout)
 
       window.setTimeout(() => {
-        const p = player.getFormationPos(false)
+        let p = player.getFormationPos(false)
+
+        // kickoff players
+        if (active) {
+          if (player.num === 9) {
+            p = {
+              x: this.game.ball.x,
+              y: this.game.ball.y + (this.side === Sides.N ? 16 : -16)
+            }
+          }
+        }
+
         player.gotoTargetPoint(p)
       }, randomInt(0, 500))
     }

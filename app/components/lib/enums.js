@@ -79,9 +79,10 @@ export const Actions = {
 
 export const GameStates = {
   idle: 'idle',
+  reset: 'reset',
+  kickoff: 'kickoff',
   play: 'play',
 
-  kickoff: 'kickoff',
   out: 'out',
   corner: 'corner',
   goalKick: 'goalKick',

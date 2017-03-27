@@ -1,7 +1,7 @@
 import pubsub from 'pubsub-js'
 import Audio  from './Audio'
 import PlayerAnimation from './PlayerAnimation'
-import { Options, Sides, Actions, Directions, DirectionVectors, VectorDirections } from './lib/enums'
+import { Options, GameStates, Sides, Actions, Directions, DirectionVectors, VectorDirections } from './lib/enums'
 import { randomInt, randomNumber } from './lib/random'
 import { getVector, getDistance, getRandomPointInRadius }  from './lib/geometry'
 import Vector from './lib/vector'
@@ -111,7 +111,7 @@ export class Player extends PIXI.Container {
 
 
   updateMoveToTargetPoint() {
-    //if (!this.targetPoint) { return }
+    if (!this.targetPoint) { return }
 
     const step = { x: this.x + this.increments.x, y: this.y + this.increments.y }
     const dist = getDistance(this.position, this.targetPoint)
@@ -129,7 +129,7 @@ export class Player extends PIXI.Container {
     this.increments.set(0, 0)
     this.direction = this.team.side
 
-    // if we are in kickoff phase, count each player that has arrived to formation
+    // if we are in reset phase, count each player that has arrived to formation
     // if (this.game.isIdle()) {
     //   pubsub.publish('arrivedToFormation', { player: this })
     // }
@@ -174,8 +174,14 @@ export class Player extends PIXI.Container {
 
 
   updateFormation(time) {
+
+
     //this.game.wait(time, () => {
     this.updateTimeout = window.setTimeout(() => {
+      if (this.game.isIdle() && this.game.state === GameStates.kickoff) {
+        return
+      }
+
       if (this !== this.game.ball.owner && this.action === Actions.idle) {
         const p = this.getFormationPos(true)
         this.gotoTargetPoint(p)
