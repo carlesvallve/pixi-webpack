@@ -63,7 +63,7 @@ export class Ball extends PIXI.Container {
 
     // goalKicks or corners
     if (this.y < pitch.top && (this.x < goalN.left || this.x > goalN.right)) {
-      if (this.lastOwner.team.side === Sides.N) {
+      if (this.lastOwner.team.side === Sides.S) {
         pubsub.publish('goalKick', { side: Sides.N })
       } else {
         const sideH = this.x < goalN.left ? 'Left' : 'Right'
@@ -73,7 +73,7 @@ export class Ball extends PIXI.Container {
       return
     }
     if (this.y > pitch.bottom && (this.x < goalS.left || this.x > goalS.right)) {
-      if (this.lastOwner.team.side === Sides.S) {
+      if (this.lastOwner.team.side === Sides.N) {
         pubsub.publish('goalKick', { side: Sides.S })
       } else {
         const sideH = this.x < goalN.left ? 'Left' : 'Right'

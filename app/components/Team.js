@@ -32,7 +32,7 @@ export class Team {
 
 
   setFormation(id = null) {
-    this.direction = this.side === Sides.N ? 1 : -1
+    this.direction = this.side === Sides.N ? -1 : 1
     this.baseY = 318 * this.direction
     this.separationY = 1.1
     if (id === null) {

@@ -178,7 +178,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.corner
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.reset(props.side)
+      this.reset(this.getOppositeSide(props.side))
     })
   }
 
@@ -196,7 +196,7 @@ export class Game extends PIXI.Container {
     this.state = GameStates.goal
     Audio.play(Audio.sfx.whistle[1], 0.2 + Math.random() * 0.2, 1.0 + Math.random() * 0.2)
     this.wait(0.2, () => {
-      this.reset(this.getOppositeSide(props.player.team.side))
+      this.reset(props.side)
     })
   }
 
