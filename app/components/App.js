@@ -1,6 +1,6 @@
 //import pubsub    from 'pubsub-js'
-import Tilesets  from './Tilesets'
-import World     from './World'
+//import Tilesets  from './Tilesets'
+import Game      from './Game'
 
 
 export class App extends PIXI.Container {
@@ -10,17 +10,13 @@ export class App extends PIXI.Container {
 
     this.props = props
 
-    const tilesets = new Tilesets(this.init.bind(this))
+    // load sprites and load game
+    this.init()
   }
 
 
   init(sprites) {
-    // create world
-    this.world = this.addChild(new World({
-      app: this,
-      x: parseInt(this.props.renderer.width / 2),
-      y: parseInt(this.props.renderer.height / 2)
-    }))
+    this.game = new Game()
   }
 }
 
