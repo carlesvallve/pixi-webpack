@@ -61,3 +61,57 @@ export const rectangle = (x, y, width, height, backgroundColor, borderColor, bor
 
   return box;
 }
+
+
+
+
+export const drawShapes = () => {
+  // Initialize the pixi Graphics class
+  var graphics = new PIXI.Graphics();
+
+  // Draw a circle
+  graphics.beginFill(0xe74c3c); // Set the fill color
+  graphics.drawCircle(60, 185, 40); // drawCircle(x, y, radius)
+  graphics.endFill(); // Applies fill to lines and shapes since the last call to beginFill.
+
+  // Draw an ellipse
+  graphics.beginFill(0x3498db); // Blue
+  graphics.drawEllipse(170, 185, 45, 25); // drawEllipse(x, y, width, height)
+  graphics.endFill();
+
+  // Draw a rectangle
+  graphics.beginFill(0x9b59b6); // Purple
+  graphics.drawRect(240, 150, 75, 75); // drawRect(x, y, width, height)
+  graphics.endFill();
+  graphics.beginFill(0x2c3e50); // Dark blue-gray 'ish
+
+  // Draw a rectangle with rounded corners
+  graphics.beginFill(0x9b59b6); // Purple
+  graphics.drawRoundedRect(350, 160, 75, 50, 10); // drawRoundedRect(x, y, width, height, radius)
+  graphics.endFill();
+
+  // Draw a triangle
+  graphics.beginFill(0xff9900); // Purple
+  graphics.moveTo(400, 60);
+  graphics.lineTo(440, 140);
+  graphics.lineTo(360, 140);
+  graphics.endFill();
+
+  // Draw a polygon to look like a star
+  graphics.beginFill(0xf1c40f); // Yellow
+  graphics.drawPolygon([550, 100, // Starting x, y coordinates for the star
+                        570, 150, // Star is drawn in a clockwork motion
+                        630, 155,
+                        585, 195,
+                        600, 250,
+                        550, 220,
+                        500, 250,
+                        515, 195,
+                        470, 155,
+                        530, 150
+                      ]);
+
+  graphics.endFill();
+
+  return graphics
+}

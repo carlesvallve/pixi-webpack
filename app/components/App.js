@@ -16,7 +16,7 @@ export class App extends PIXI.Container {
 
 
   init(sprites) {
-    this.game = new Game()
+    this.game = this.addChild(new Game())
   }
 }
 
