@@ -69,6 +69,8 @@ export const drawShapes = () => {
   // Initialize the pixi Graphics class
   var graphics = new PIXI.Graphics();
 
+
+
   // Draw a circle
   graphics.beginFill(0xe74c3c); // Set the fill color
   graphics.drawCircle(60, 185, 40); // drawCircle(x, y, radius)
@@ -112,6 +114,13 @@ export const drawShapes = () => {
                       ]);
 
   graphics.endFill();
+
+  // var shadow     = new PIXI.filters.DropShadowFilter();
+  // shadow.blur = 4;
+  // shadow.alpha = 1;
+  // shadow.distance = 5;
+  // //Spr = new PIXI.Sprite(PIXI.loader.resources.Sheet1.textures['button.png']);
+  // graphics.filters     = [shadow];
 
   return graphics
 }

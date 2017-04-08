@@ -23,8 +23,8 @@ const app = stage.addChild(new App({renderer}))
 animate();
 
 function animate() {
-    pubsub.publish('render', { /* pass any params you wish */ })
-    renderer.render(stage)
-    meter.tick()
-    requestAnimationFrame(animate)
+    pubsub.publish('render', { /* pass any params you wish */ });
+    renderer.render(stage);
+    meter.tick();
+    requestAnimationFrame(animate);
 }

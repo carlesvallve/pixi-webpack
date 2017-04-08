@@ -1,5 +1,8 @@
 import pubsub    from 'pubsub-js'
-import { drawShapes, roundRect } from './lib/geometry'
+import { randomInt } from './lib/random'
+import Tile from './Tile'
+import Player from './Player'
+import Keyboard from './Keyboard'
 //import Audio     from './Audio'
 
 //import StepSequencer from 'step-sequencer'
@@ -8,77 +11,81 @@ import { drawShapes, roundRect } from './lib/geometry'
 export class Game extends PIXI.Container {
   constructor(props) {
     super()
+    this.props = props
 
     // subscribe to game events
-    pubsub.subscribe('render',    this.render.bind(this))
+    pubsub.subscribe('render', this.render.bind(this))
+    pubsub.subscribe('collision', this.onCollision.bind(this))
 
-    // load assets
-    const loader = PIXI.loader
+    console.log(this.props.playerId)
 
-    loader.add('air',         '/assets/img/game/svg/air.svg')
-          .add('macys',       '/assets/img/game/svg/macys.svg')
-          .add('matternet',   '/assets/img/game/svg/matternet.svg')
-          .add('android',     '/assets/img/game/svg/android.svg')
-          .add('apple',       '/assets/img/game/svg/apple.svg')
-          .add('asana',       '/assets/img/game/svg/asana.svg')
-          .add('baidu',       '/assets/img/game/svg/baidu.svg')
-          .add('bigcartel',   '/assets/img/game/svg/bigcartel.svg')
-          .add('bitbucket',   '/assets/img/game/svg/bitbucket.svg')
-          .add('codio',         '/assets/img/game/svg/codio.svg')
-          .add('diaspora',         '/assets/img/game/svg/diaspora.svg')
-          .add('drupal',         '/assets/img/game/svg/drupal.svg')
-          .add('ethereum',         '/assets/img/game/svg/ethereum.svg')
-          .add('gitlab',         '/assets/img/game/svg/gitlab.svg')
-          .add('googledrive',         '/assets/img/game/svg/googledrive.svg')
-          .add('gratipay',         '/assets/img/game/svg/gratipay.svg')
-          .add('hipchat',         '/assets/img/game/svg/hipchat.svg')
-          .add('json',         '/assets/img/game/svg/json.svg')
-          .add('launchpad',         '/assets/img/game/svg/launchpad.svg')
-          .add('moo',         '/assets/img/game/svg/moo.svg')
-          .add('protoio',         '/assets/img/game/svg/protoio.svg')
-          .add('react',         '/assets/img/game/svg/react.svg')
-          .add('sentiayoga',         '/assets/img/game/svg/sentiayoga.svg')
-          .add('tinder',         '/assets/img/game/svg/tinder.svg')
-          .add('twitch',         '/assets/img/game/svg/twitch.svg')
-          .add('twoo',         '/assets/img/game/svg/twoo.svg')
-          .add('ubuntu',         '/assets/img/game/svg/ubuntu.svg')
+    this.keyboard = new Keyboard()
+    this.init()
 
-      loader.load((loader, res) => { this.init(res) })
   }
 
   // =================================
   // Game Initialization
   // =================================
 
-  init(res) {
-    console.log('creating game elements', res)
+  init() {
+    //console.log('creating game elements', res)
+    //this.addChild(drawShapes());
 
-    const air = this.addChild(this.createSprite('launchpad', 100, 100, 0.25))
-    console.log(air)
+    // create tiles
+    const x = this.props.renderer.width / 2
+    const y = this.props.renderer.height * 0.75
+    const w = (this.props.renderer.width * 0.75) / 3
+    const h = w / 3
+    const m = 5
 
-    this.addChild(drawShapes());
+    this.tiles = [
+      this.addChild(new Tile({ num: 0, x: x - w - m, y: y, w: w, h: h })),
+      this.addChild(new Tile({ num: 1, x: x, y: y, w: w, h: h })),
+      this.addChild(new Tile({ num: 2,  x: x + w + m, y: y, w: w, h: h }))
+    ]
+
+
+    // create player
+    const player = this.addChild(new Player({
+      id: this.props.playerId,
+      x: x,
+      y: this.props.renderer.height * 0.5, //0.75 - h / 2 - 16,
+      w: 32,
+      h: 32,
+      floorY: y, // - h / 2,
+      trackW: w + m
+    }))
+
   }
 
 
+  onCollision(e, params) {
+    for (let i = 0; i < this.tiles.length; i++) {
+      this.tiles[i].sprite.tint = 0x000000
+      this.tiles[i].triangle.visible = false
+    }
 
-  createSprite(id, x, y, sc) {
-    const texture = PIXI.Texture.fromImage(id);
-    const sprite = new PIXI.Sprite(texture);
+    let tiles = this.tiles.slice()
 
-    sprite.position.set(x, y)
-    sprite.anchor.set(0.5, 0.5)
-    sprite.width = 32
-    sprite.height = 32
-    //sprite.scale.set(sc)
-    return sprite
+    const r = randomInt(0,2)
+    for (let i = 0; i <= r; i++) {
+      const tile = tiles[randomInt(0, tiles.length -1)]
+      tile.setSpikes()
+      tiles = tiles.slice(r, r + 1)
+      if (tiles.length === 0) { break }
+    }
   }
 
   // =================================
   // Game Render
   // =================================
 
+
+
   render() {
-    //console.log('rendering game')
+    //console.log('rendering game', this.keyboard.keys)
+
   }
 
 
