@@ -48,9 +48,6 @@ export class App extends PIXI.Container {
           .add('twoo',         '/assets/img/game/svg/twoo.svg')
           .add('ubuntu',         '/assets/img/game/svg/ubuntu.svg')
 
-      loader.add('drop',         '/assets/audio/game/drop.wav')
-            .add('windy',         '/assets/audio/game/windy.wav')
-
       loader.load((loader, res) => { this.init(res) })
   }
 

@@ -12,16 +12,23 @@ export class Player extends PIXI.Container {
     pubsub.subscribe('keyDown', this.keyDown.bind(this))
     pubsub.subscribe('collision', this.onCollision.bind(this))
 
+    // create player sprite
     const { id, x, y, w, h } = this.props
     this.setSprite(id, w, h)
     this.position.set(x, y)
     this.centerX = x
+    this.centerY = y
+
+    // g0.5 ------- 28
+    // g1 --------- y
 
     // initialize gravity and velocity
-    this.gravity = 0.5
+    this.gravity = 0.75 // 0.5 // 1
+    this.impulse = 24 //28 // 20
     this.vx = 0
     this.vy = (Math.random() * +10) + 5
 
+    // initialize track number
     this.trackNum = 1
   }
 
@@ -31,6 +38,7 @@ export class Player extends PIXI.Container {
     this.sprite.anchor.set(0.5, 0.5)
     this.sprite.width = w
     this.sprite.height = h
+    this.sprite.tint = this.props.color
     this.addChild(this.sprite)
   }
 
@@ -53,36 +61,32 @@ export class Player extends PIXI.Container {
     Audio.play(Audio.sfx.drop, 1, [0.5, 0.75], false)
   }
 
+
   render() {
-
-
-    // checking for rebound on floor level
-    const y = this.props.floorY - this.props.h / 2
-    if (this.y >= y) {
-      //this.y = y
-      this.vy = - this.vy * 1
-      //if (this.vy > -2) { this.vy = 0 }
-      pubsub.publish('collision', { track: this.trackNum })
-    } else {
-      // adding gravity to velocity on y axis
-      this.vy += this.gravity;
-    }
-
-
-
-    // updating horizontal movement depending on track
+    // update horizontal movement depending on track
     const w = this.props.trackW
     const x = this.centerX - w + this.trackNum * w
     this.vx = (x - this.x) / 3
 
-    // updating position
+    // add gravity to velocity on y axis
+    this.vy += this.gravity;
+
+    // update position
     this.position.set(
       this.x += this.vx,
       this.y += this.vy
     )
 
-    // updating rotation
-    this.sprite.rotation -= 0.1
+    // check for rebound at floor level
+    const floorY = this.props.floorY - this.props.h / 2
+    if (this.y + this.vy >= floorY) {
+      this.y = floorY
+      this.vy = this.impulse * -this.gravity
+      pubsub.publish('collision', { track: this.trackNum })
+    } else {
+      // update rotation
+      this.sprite.rotation -= 0.1
+    }
   }
 }
 

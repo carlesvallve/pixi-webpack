@@ -1,5 +1,6 @@
 //import * as PIXI from 'pixi.js';
 import pubsub from 'pubsub-js'
+import tweenManager from 'pixi-tween'
 import App from './components/App'
 
 const renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x666666})
@@ -25,6 +26,7 @@ animate();
 function animate() {
     pubsub.publish('render', { /* pass any params you wish */ })
     renderer.render(stage)
+    PIXI.tweenManager.update();
     meter.tick()
     requestAnimationFrame(animate)
 }

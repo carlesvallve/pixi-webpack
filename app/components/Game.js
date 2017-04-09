@@ -1,10 +1,9 @@
-import pubsub    from 'pubsub-js'
+import pubsub from 'pubsub-js'
 import { randomInt } from './lib/random'
 import Tile from './Tile'
 import Player from './Player'
 import Keyboard from './Keyboard'
 //import Audio     from './Audio'
-
 //import StepSequencer from 'step-sequencer'
 
 
@@ -19,19 +18,13 @@ export class Game extends PIXI.Container {
 
     console.log(this.props.playerId)
 
+    this.activeStar = false
+
     this.keyboard = new Keyboard()
     this.init()
-
   }
 
-  // =================================
-  // Game Initialization
-  // =================================
-
   init() {
-    //console.log('creating game elements', res)
-    //this.addChild(drawShapes());
-
     // create tiles
     const x = this.props.renderer.width / 2
     const y = this.props.renderer.height * 0.75
@@ -45,51 +38,74 @@ export class Game extends PIXI.Container {
       this.addChild(new Tile({ num: 2,  x: x + w + m, y: y, w: w, h: h }))
     ]
 
-
     // create player
     const player = this.addChild(new Player({
       id: this.props.playerId,
+      color: 0x000000,
       x: x,
-      y: this.props.renderer.height * 0.5, //0.75 - h / 2 - 16,
+      y: this.props.renderer.height * 0.4,
       w: 32,
       h: 32,
-      floorY: y, // - h / 2,
+      floorY: y,
       trackW: w + m
     }))
-
   }
-
 
   onCollision(e, params) {
+    // a tile has 50% chance to change state
+    let closedTiles = []
+
     for (let i = 0; i < this.tiles.length; i++) {
-      this.tiles[i].sprite.tint = 0x000000
-      this.tiles[i].triangle.visible = false
+      const tile = this.tiles[i]
+      if (tile.star === null) {
+        const r = randomInt(1, 100)
+        if (r <= 75) { tile.trap.toggle() }
+        if (!tile.trap.active) {
+          closedTiles.push(tile)
+        }
+      }
     }
 
-    let tiles = this.tiles.slice()
+    // but we want to make sure that there is always a closed tile
+    if (closedTiles.length === 0) {
+      const tile = this.tiles[randomInt(0, this.tiles.length - 1)]
+      tile.trap.close()
+      closedTiles.push(tile)
+    }
 
-    const r = randomInt(0,2)
-    for (let i = 0; i <= r; i++) {
-      const tile = tiles[randomInt(0, tiles.length -1)]
-      tile.setSpikes()
-      tiles = tiles.slice(r, r + 1)
-      if (tiles.length === 0) { break }
+    // there is a possibility that only one star appears on a closed tile
+    if (closedTiles.length > 0 && !this.activeStar) {
+      const r = randomInt(1, 100)
+      if (r <= 50) {
+        const tile = closedTiles[randomInt(0, closedTiles.length - 1)]
+        if (tile.star === null) {
+          tile.spawnStar({ color: 0xFFFFFF })
+          this.activeStar = true
+        }
+      }
     }
   }
-
-  // =================================
-  // Game Render
-  // =================================
-
-
 
   render() {
     //console.log('rendering game', this.keyboard.keys)
 
   }
 
-
-
+  // debugLines() {
+  //   const g1 = new PIXI.Graphics()
+  //   g1.lineStyle(1, 0xff0000)
+  //      .moveTo(0, player.props.y) // - player.props.h)
+  //      .lineTo(600, player.props.y) // - player.props.h)
+  //
+  //   this.addChild(g1)
+  //
+  //   const g2 = new PIXI.Graphics()
+  //   g2.lineStyle(1, 0xff0000)
+  //      .moveTo(0, y)
+  //      .lineTo(600, y)
+  //
+  //   this.addChild(g2)
+  // }
 }
 
 export default Game
