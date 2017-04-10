@@ -7,6 +7,8 @@ export class Player extends PIXI.Container {
     super()
     this.props = props
 
+    this.zOrder = 2
+
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
     pubsub.subscribe('keyDown', this.keyDown.bind(this))
@@ -25,7 +27,7 @@ export class Player extends PIXI.Container {
 
     // initialize gravity and velocity
     this.gravity = 0.75 // 0.5 // 1
-    this.impulse = 24 //28 // 20
+    this.impulse = 26 //28 // 20
     this.vx = 0
     this.vy = (Math.random() * +10) + 5
 
@@ -51,6 +53,8 @@ export class Player extends PIXI.Container {
   keyDown(e, key) {
     if (key === 37) { this.changeTrack(-1) }
     if (key === 39) { this.changeTrack(1)  }
+    if (key === 40) { this.impulse = 0 }
+    if (key === 38) { this.impulse = 26 }
   }
 
   touchStart(e, params) {
@@ -66,12 +70,17 @@ export class Player extends PIXI.Container {
     this.trackNum += d
     if (this.trackNum < 0) { this.trackNum = 0; return }
     if (this.trackNum > 2) { this.trackNum = 2; return }
-    Audio.play(Audio.sfx.bass, 1, [0.5, 0.75], false)
+    Audio.play(Audio.sfx.bass, 1, [1.0, 1.25], false)
   }
 
   onCollision(e, params) {
     //console.log('!', e, params)
-    Audio.play(Audio.sfx.drop, 1, [0.5, 0.75], false)
+    Audio.play(Audio.sfx.drop, 1, [1, 1.25], false)
+
+    const tile = this.props.game.tiles[this.trackNum]
+    if (tile.star !== null) {
+      tile.pickStar()
+    }
   }
 
 

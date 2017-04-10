@@ -3,6 +3,7 @@ import pubsub from 'pubsub-js'
 export class Star extends PIXI.Container {
   constructor(props) {
     super()
+    console.log(props)
     this.props = props
 
     // subscribe to game events

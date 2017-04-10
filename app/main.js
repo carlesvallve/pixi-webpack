@@ -30,10 +30,21 @@ const meter = new FPSMeter({
 
 const app = stage.addChild(new App({renderer}))
 
+
+/* call this function whenever you added a new layer/container */
+stage.updateLayersOrder = function () {
+    stage.children.sort(function(a,b) {
+        a.zIndex = a.zIndex || 0;
+        b.zIndex = b.zIndex || 0;
+        return b.zIndex - a.zIndex
+    });
+};
+
 animate();
 
 function animate() {
     pubsub.publish('render', { /* pass any params you wish */ })
+    stage.updateLayersOrder();
     renderer.render(stage)
     PIXI.tweenManager.update();
     meter.tick()

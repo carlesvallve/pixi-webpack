@@ -59,6 +59,7 @@ export class Game extends PIXI.Container {
 
     // create player
     const player = this.addChild(new Player({
+      game: this,
       id: this.props.playerId,
       color: 0x000000,
       x: x,
@@ -98,7 +99,7 @@ export class Game extends PIXI.Container {
       if (r <= 50) {
         const tile = closedTiles[randomInt(0, closedTiles.length - 1)]
         if (tile.star === null) {
-          tile.spawnStar({ color: 0xFFFFFF })
+          tile.spawnStar()
           this.activeStar = true
         }
       }

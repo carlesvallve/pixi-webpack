@@ -1,5 +1,6 @@
 import pubsub from 'pubsub-js'
 import tweenManager from 'pixi-tween'
+import Audio from './Audio'
 import Trap from './Trap'
 import Star from './Star'
 
@@ -7,6 +8,8 @@ export class Tile extends PIXI.Container {
   constructor(props) {
     super()
     this.props = props
+
+    this.zOrder = 1
 
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
@@ -38,11 +41,16 @@ export class Tile extends PIXI.Container {
     this.addChild(this.sprite)
   }
 
-  spawnStar(props) {
+  spawnStar() {
     window.setTimeout(() => {
-      this.star = this.addChild(new Star(props))
+      this.star = this.addChild(new Star({ tile: this, color: 0xFFFFFF }))
     }, 300)
+  }
 
+  pickStar() {
+    Audio.play(Audio.sfx.ding, 1, [2, 2.5], false)
+    this.removeChild(this.star)
+    this.star = null;
   }
 
 
