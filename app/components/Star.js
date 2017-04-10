@@ -9,8 +9,8 @@ export class Star extends PIXI.Container {
     pubsub.subscribe('render', this.render.bind(this))
     //pubsub.subscribe('collision', this.onCollision.bind(this))
 
-    this.setSprite(16, 16)
-    this.position.set(0, -16)
+    this.setSprite(24, 24)
+    this.position.set(0, -20)
     this.speed = 5
   }
 
@@ -22,6 +22,11 @@ export class Star extends PIXI.Container {
     this.sprite.height = h
     this.sprite.scale.set(0, 0)
     this.sprite.tint = this.props.color
+
+    const blurFilter = new PIXI.filters.BlurFilter()
+    blurFilter.blur = 0.5
+    this.sprite.filters = [blurFilter]
+
     this.addChild(this.sprite)
   }
 

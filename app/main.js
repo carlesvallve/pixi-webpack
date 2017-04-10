@@ -3,14 +3,23 @@ import pubsub from 'pubsub-js'
 import tweenManager from 'pixi-tween'
 import App from './components/App'
 
-const renderer = PIXI.autoDetectRenderer(window.innerWidth -0, window.innerHeight - 4, {backgroundColor: 0x666666})
+// arguments: width, height, view, transparent, antialias
+const renderer = PIXI.autoDetectRenderer(
+  window.innerWidth -0,
+  window.innerHeight - 4,
+  { antialias: true, transparent: true, autoResize: true }
+)
 const stage = new PIXI.Container()
 
 renderer.view.style.position = "absolute"
 renderer.view.style.display = "block"
-renderer.autoResize = true
 renderer.resize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.view)
+
+// window.addEventListener('resize', function(evt){
+//   console.log('resizing...', evt)
+//   renderer.resize(window.innerWidth, window.innerHeight)
+// });
 
 const meter = new FPSMeter({
     theme: 'transparent',     // Meter theme. Build in: 'dark', 'light', 'transparent', 'colorful'.

@@ -10,6 +10,7 @@ export class Player extends PIXI.Container {
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
     pubsub.subscribe('keyDown', this.keyDown.bind(this))
+    pubsub.subscribe('touchStart', this.touchStart.bind(this))
     pubsub.subscribe('collision', this.onCollision.bind(this))
 
     // create player sprite
@@ -39,17 +40,29 @@ export class Player extends PIXI.Container {
     this.sprite.width = w
     this.sprite.height = h
     this.sprite.tint = this.props.color
+
+    const blurFilter = new PIXI.filters.BlurFilter()
+    blurFilter.blur = 0.5
+    this.sprite.filters = [blurFilter]
+
     this.addChild(this.sprite)
   }
 
   keyDown(e, key) {
-    //console.log('key', key)
     if (key === 37) { this.changeTrack(-1) }
     if (key === 39) { this.changeTrack(1)  }
   }
 
-  changeTrack(d) {
+  touchStart(e, params) {
+    const x = params.touches[0].pageX
+    const y = params.touches[0].pageY
+    const dx = (x - this.x)
+    if (Math.abs(dx) > 10) {
+      this.changeTrack(Math.sign(dx))
+    }
+  }
 
+  changeTrack(d) {
     this.trackNum += d
     if (this.trackNum < 0) { this.trackNum = 0; return }
     if (this.trackNum > 2) { this.trackNum = 2; return }

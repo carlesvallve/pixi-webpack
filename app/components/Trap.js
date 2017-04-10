@@ -33,6 +33,10 @@ export class Trap extends PIXI.Container {
     this.sprite = new PIXI.Sprite(texture)
     this.sprite.anchor.set(0.5, 1)
 
+    const blurFilter = new PIXI.filters.BlurFilter()
+    blurFilter.blur = 0.5
+    this.sprite.filters = [blurFilter]
+
     this.addChild(this.sprite)
   }
 
@@ -46,7 +50,7 @@ export class Trap extends PIXI.Container {
 
   open() {
     this.active = true
-    window.setTimeout(() => { this.targetY = 0 }, this.delay)
+    window.setTimeout(() => { this.targetY = 2 }, this.delay)
   }
 
   close() {

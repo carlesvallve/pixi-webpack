@@ -3,6 +3,7 @@ import { randomInt } from './lib/random'
 import Tile from './Tile'
 import Player from './Player'
 import Keyboard from './Keyboard'
+import Touch from './Touch'
 //import Audio     from './Audio'
 //import StepSequencer from 'step-sequencer'
 
@@ -21,7 +22,25 @@ export class Game extends PIXI.Container {
     this.activeStar = false
 
     this.keyboard = new Keyboard()
+
+    this.touch = this.addChild(new Touch())
+    pubsub.subscribe('touchStart', this.touchStart.bind(this))
+    pubsub.subscribe('touchMove', this.touchMove.bind(this))
+    pubsub.subscribe('touchEnd', this.touchEnd.bind(this))
+
     this.init()
+  }
+
+  touchStart(e, params) {
+    //console.log('touchStart', e, params)
+  }
+
+  touchMove(e, params) {
+    //console.log('touchMove', e, params)
+  }
+
+  touchEnd(e, params) {
+    //console.log('touchEnd', e, params)
   }
 
   init() {

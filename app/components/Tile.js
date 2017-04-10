@@ -30,6 +30,11 @@ export class Tile extends PIXI.Container {
     var texture = this.graphics.generateTexture()
     this.sprite = new PIXI.Sprite(texture)
     this.sprite.anchor.set(0.5, 0)
+
+    const blurFilter = new PIXI.filters.BlurFilter()
+    blurFilter.blur = 0.5
+    this.sprite.filters = [blurFilter]
+
     this.addChild(this.sprite)
   }
 

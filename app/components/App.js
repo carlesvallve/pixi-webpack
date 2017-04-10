@@ -1,7 +1,6 @@
-//import pubsub    from 'pubsub-js'
-//import Tilesets  from './Tilesets'
+//import pubsub      from 'pubsub-js'
 import { randomInt } from './lib/random'
-import Game      from './Game'
+import Game          from './Game'
 
 
 export class App extends PIXI.Container {
@@ -13,7 +12,6 @@ export class App extends PIXI.Container {
 
     // load application assets
     this.loadAssets()
-    //this.init()
   }
 
   loadAssets() {
