@@ -4,7 +4,7 @@ export class Touch extends PIXI.Graphics { //PIXI.Container {
   constructor() {
     super()
     this.debug = false
-    this.draw = true
+    this.draw = false
 
     //Attach touch event listeners
     window.addEventListener("touchstart", this.start.bind(this), false)

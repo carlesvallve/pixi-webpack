@@ -1,11 +1,16 @@
 import pubsub from 'pubsub-js'
-import { randomInt } from './lib/random'
-import Tile from './Tile'
-import Player from './Player'
 import Keyboard from './Keyboard'
 import Touch from './Touch'
+import { randomInt } from './lib/random'
+import { GameStates } from'./States'
+import Bg from './Bg'
+import Tile from './Tile'
+import Player from './Player'
+
 //import Audio     from './Audio'
 //import StepSequencer from 'step-sequencer'
+
+
 
 
 export class Game extends PIXI.Container {
@@ -15,33 +20,24 @@ export class Game extends PIXI.Container {
 
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
+    pubsub.subscribe('gamestart', this.gameStart.bind(this))
+    pubsub.subscribe('gameover', this.gameOver.bind(this))
     pubsub.subscribe('collision', this.onCollision.bind(this))
 
-    console.log(this.props.playerId)
-
-    this.activeStar = false
-
     this.keyboard = new Keyboard()
-
     this.touch = this.addChild(new Touch())
-    pubsub.subscribe('touchStart', this.touchStart.bind(this))
-    pubsub.subscribe('touchMove', this.touchMove.bind(this))
-    pubsub.subscribe('touchEnd', this.touchEnd.bind(this))
+    //pubsub.subscribe('touchStart', this.touchStart.bind(this))
+    //pubsub.subscribe('touchMove', this.touchMove.bind(this))
+    //pubsub.subscribe('touchEnd', this.touchEnd.bind(this))
+
+    //const { width, height } = this.props.renderer
+    //this.bg = this.addChild(new PIXI.Sprite(Bg.generateRadialGradient(width, height)))
+    this.bg = this.addChild(new Bg({ renderer: this.props.renderer }))
+    //this.changeBgColor()
 
     this.init()
   }
 
-  touchStart(e, params) {
-    //console.log('touchStart', e, params)
-  }
-
-  touchMove(e, params) {
-    //console.log('touchMove', e, params)
-  }
-
-  touchEnd(e, params) {
-    //console.log('touchEnd', e, params)
-  }
 
   init() {
     // create tiles
@@ -58,9 +54,7 @@ export class Game extends PIXI.Container {
     ]
 
     // create player
-    const player = this.addChild(new Player({
-      game: this,
-      id: this.props.playerId,
+    this.player = this.addChild(new Player({
       color: 0x000000,
       x: x,
       y: this.props.renderer.height * 0.4,
@@ -69,9 +63,48 @@ export class Game extends PIXI.Container {
       floorY: y,
       trackW: w + m
     }))
+
+    // init game vars
+    this.activeStar = false
+  }
+
+  gameStart() {
+    this.state = GameStates.play
+    this.bg.setRandomColor()
+  }
+
+  gameOver() {
+    this.state = GameStates.over
+    //this.bg.setRandomColor()
   }
 
   onCollision(e, params) {
+    if (this.state === GameStates.over) { return }
+
+    const tile = this.tiles[params.trackNum]
+    //params.player.x = tile.x;
+
+    // pick stars
+    if (tile.star !== null && tile.star.isPickable()) {
+      params.player.pickStar(tile)
+      this.activeStar = false
+    }
+
+    // die on traps
+    if (tile.trap.active) {
+      params.player.x = tile.x;
+      params.player.die()
+      this.state = GameStates.over
+      return
+    }
+
+    // update tiles
+    window.setTimeout(() => {
+      this.updateTiles()
+    })
+  }
+
+  updateTiles() {
     // a tile has 50% chance to change state
     let closedTiles = []
 
@@ -107,8 +140,15 @@ export class Game extends PIXI.Container {
   }
 
   render() {
-    //console.log('rendering game', this.keyboard.keys)
+    if (this.state === GameStates.play) {
 
+    }
+
+    if (this.state === GameStates.over) {
+
+    }
+
+    //console.log('rendering game', this.keyboard.keys)
   }
 
   // debugLines() {

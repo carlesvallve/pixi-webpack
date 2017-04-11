@@ -7,7 +7,7 @@ import App from './components/App'
 const renderer = PIXI.autoDetectRenderer(
   window.innerWidth -0,
   window.innerHeight - 4,
-  { antialias: true, transparent: true, autoResize: true }
+  { antialias: true, transparent: false, autoResize: true, backgroundColor: 0xFFFFFF }
 )
 const stage = new PIXI.Container()
 

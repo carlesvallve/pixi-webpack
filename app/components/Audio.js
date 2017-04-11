@@ -3,7 +3,7 @@ import { randomInt, randomNumber } from './lib/random'
 // Settings
 //const { enabled, masterVolume } = Options.audio
 
-const enabled = true;
+const enabled = false;
 const masterVolume = 1;
 
 const Audio = {
@@ -17,6 +17,11 @@ const Audio = {
     alien: PIXI.sound.Sound.from('/assets/audio/game/kickalien.wav'),
     tennis: PIXI.sound.Sound.from('/assets/audio/game/tennis.wav'),
     bass: PIXI.sound.Sound.from('/assets/audio/game/bass.wav'),
+    woosh: PIXI.sound.Sound.from('/assets/audio/game/woosh.wav'),
+    squish: PIXI.sound.Sound.from('/assets/audio/game/squish.wav'),
+    squish2: PIXI.sound.Sound.from('/assets/audio/game/squish2.wav'),
+    flesh: PIXI.sound.Sound.from('/assets/audio/game/flesh.wav'),
+    dingEcho: PIXI.sound.Sound.from('/assets/audio/game/ding-echo.wav'),
   },
 
   // Methods

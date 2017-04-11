@@ -1,5 +1,5 @@
 import pubsub from 'pubsub-js'
-
+import Effects from './Effects'
 
 export class Trap extends PIXI.Container {
   constructor(props) {
@@ -8,7 +8,6 @@ export class Trap extends PIXI.Container {
 
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
-    //pubsub.subscribe('collision', this.onCollision.bind(this))
 
     const { x, y, w, h } = this.props
     this.setSprite(w, h)
@@ -17,7 +16,6 @@ export class Trap extends PIXI.Container {
     this.active = false
     this.targetY = h
     this.speed = 5
-    this.delay = 150
   }
 
   setSprite(w, h) {
@@ -33,10 +31,6 @@ export class Trap extends PIXI.Container {
     this.sprite = new PIXI.Sprite(texture)
     this.sprite.anchor.set(0.5, 1)
 
-    const blurFilter = new PIXI.filters.BlurFilter()
-    blurFilter.blur = 0.5
-    this.sprite.filters = [blurFilter]
-
     this.addChild(this.sprite)
   }
 
@@ -50,12 +44,12 @@ export class Trap extends PIXI.Container {
 
   open() {
     this.active = true
-    window.setTimeout(() => { this.targetY = 2 }, this.delay)
+    window.setTimeout(() => { this.targetY = 2 })
   }
 
   close() {
     this.active = false
-    window.setTimeout(() => { this.targetY = this.props.h }, this.delay)
+    window.setTimeout(() => { this.targetY = this.props.h })
   }
 
   render() {
