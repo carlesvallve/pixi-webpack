@@ -1,19 +1,20 @@
 import Game from './Game'
-import pubsub from 'pubsub-js'
-
 
 export class App extends PIXI.Container {
   constructor(props) {
     super()
 
-    //pubsub.subscribe('gameover', this.onGameover.bind(this))
-
     this.props = props
     this.game = this.addChild(new Game({ renderer: this.props.renderer }))
   }
 
-
+  updateLayersOrder() {
+    this.children.sort(function(a,b) {
+        a.zIndex = a.zIndex || 0;
+        b.zIndex = b.zIndex || 0;
+        return b.zIndex - a.zIndex
+    })
+  }
 }
-
 
 export default App

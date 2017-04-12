@@ -1,8 +1,10 @@
 import pubsub from 'pubsub-js'
 import { randomInt } from './lib/random'
 import { PlayerStates } from'./States'
-import Audio from './Audio'
-import Effects from './Effects'
+import { loadPlayerAssets, sfx } from './Assets'
+import Audio from './lib/audio'
+import Effects from './lib/effects'
+import Explosion from './Explosion'
 
 
 export class Player extends PIXI.Container {
@@ -10,44 +12,10 @@ export class Player extends PIXI.Container {
     super()
     this.props = props
 
-    this.loadAssets()
-  }
-
-  loadAssets() {
-    // load assets
-    const loader = PIXI.loader
-    loader.add('air',         '/assets/img/game/svg/air.svg')
-          .add('macys',       '/assets/img/game/svg/macys.svg')
-          .add('matternet',   '/assets/img/game/svg/matternet.svg')
-          .add('android',     '/assets/img/game/svg/android.svg')
-          .add('apple',       '/assets/img/game/svg/apple.svg')
-          .add('asana',       '/assets/img/game/svg/asana.svg')
-          .add('baidu',       '/assets/img/game/svg/baidu.svg')
-          .add('bigcartel',   '/assets/img/game/svg/bigcartel.svg')
-          .add('bitbucket',   '/assets/img/game/svg/bitbucket.svg')
-          .add('codio',         '/assets/img/game/svg/codio.svg')
-          .add('diaspora',         '/assets/img/game/svg/diaspora.svg')
-          .add('drupal',         '/assets/img/game/svg/drupal.svg')
-          .add('ethereum',         '/assets/img/game/svg/ethereum.svg')
-          .add('gitlab',         '/assets/img/game/svg/gitlab.svg')
-          .add('googledrive',         '/assets/img/game/svg/googledrive.svg')
-          .add('gratipay',         '/assets/img/game/svg/gratipay.svg')
-          .add('hipchat',         '/assets/img/game/svg/hipchat.svg')
-          .add('json',         '/assets/img/game/svg/json.svg')
-          .add('launchpad',         '/assets/img/game/svg/launchpad.svg')
-          .add('moo',         '/assets/img/game/svg/moo.svg')
-          .add('protoio',         '/assets/img/game/svg/protoio.svg')
-          .add('react',         '/assets/img/game/svg/react.svg')
-          .add('sentiayoga',         '/assets/img/game/svg/sentiayoga.svg')
-          .add('tinder',         '/assets/img/game/svg/tinder.svg')
-          .add('twitch',         '/assets/img/game/svg/twitch.svg')
-          .add('twoo',         '/assets/img/game/svg/twoo.svg')
-          .add('ubuntu',         '/assets/img/game/svg/ubuntu.svg')
-
-      loader.load((loader, res) => {
-        this.assets = res
-        this.init()
-      })
+    loadPlayerAssets((res) => {
+      this.assets = res
+      this.init()
+    })
   }
 
   getRandomId() {
@@ -78,7 +46,7 @@ export class Player extends PIXI.Container {
     this.gravity = 0.75 // 0.5 // 1
     this.impulse = 26 //28 // 20
     this.vx = 0
-    this.vy = (Math.random() * +10) + 5
+    this.vy = 0 //(Math.random() * +10) + 5
 
     // initialize game vars
     //this.playing = false
@@ -137,24 +105,26 @@ export class Player extends PIXI.Container {
     this.trackNum += d
     if (this.trackNum < 0) { this.trackNum = 0; return }
     if (this.trackNum > 2) { this.trackNum = 2; return }
-    Audio.play(Audio.sfx.woosh, 0.3, [0.75, 1.0], false)
+    Audio.play(sfx.woosh, 0.3, [0.75, 1.0], false)
   }
 
   pickStar(tile) {
-    Audio.play(Audio.sfx.dingEcho, 1, [2, 2], false)
+    Audio.play(sfx.dingEcho, 1, [2, 2], false)
     tile.pickStar()
     this.setRandomImage()
   }
 
   die() {
-    Audio.play(Audio.sfx.flesh, 0.5, [0.75, 1.25], false)
-    Audio.play(Audio.sfx.squish2, 0.75, [0.5, 1.25], false)
-    this.state = PlayerStates.idle
+    Audio.play(sfx.flesh, 0.5, [0.75, 1.25], false)
+    Audio.play(sfx.squish2, 0.75, [0.5, 1.25], false)
+    this.state = PlayerStates.dead
     pubsub.publish('gameover', {})
+
+    
   }
 
   onCollision(e, params) {
-    Audio.play(Audio.sfx.drop, 1, [1, 1.25], false)
+    Audio.play(sfx.drop, 1, [1, 1.25], false)
   }
 
   render() {
@@ -163,6 +133,7 @@ export class Player extends PIXI.Container {
     }
 
     if (this.state === PlayerStates.dead) {
+
       return
     }
 

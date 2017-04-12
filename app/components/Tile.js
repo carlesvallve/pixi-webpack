@@ -1,7 +1,6 @@
 import pubsub from 'pubsub-js'
 import tweenManager from 'pixi-tween'
-import Audio from './Audio'
-import Effects from './Effects'
+import Effects from './lib/effects'
 import Trap from './Trap'
 import Star from './Star'
 
@@ -9,11 +8,10 @@ import Star from './Star'
 export class Tile extends PIXI.Container {
   constructor(props) {
     super()
-    this.props = props
-
-    // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
 
+    this.props = props
+    
     const { x, y, w, h } = this.props
     this.setSprite(w, h)
     this.position.set(x, y)

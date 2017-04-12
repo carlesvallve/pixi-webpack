@@ -1,40 +1,31 @@
-import pubsub from 'pubsub-js'
-import Keyboard from './Keyboard'
-import Touch from './Touch'
-import { randomInt } from './lib/random'
+import pubsub         from 'pubsub-js'
+
+import Keyboard       from './lib/Keyboard'
+import Touch          from './lib/Touch'
+import { randomInt }  from './lib/random'
+
 import { GameStates } from'./States'
 import Bg from './Bg'
 import Tile from './Tile'
 import Player from './Player'
+import Explosion from './Explosion'
 
-//import Audio     from './Audio'
-//import StepSequencer from 'step-sequencer'
-
-
+import Effects from './lib/effects'
 
 
 export class Game extends PIXI.Container {
   constructor(props) {
     super()
-    this.props = props
-
-    // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
     pubsub.subscribe('gamestart', this.gameStart.bind(this))
     pubsub.subscribe('gameover', this.gameOver.bind(this))
     pubsub.subscribe('collision', this.onCollision.bind(this))
 
+    this.props = props
     this.keyboard = new Keyboard()
     this.touch = this.addChild(new Touch())
-    //pubsub.subscribe('touchStart', this.touchStart.bind(this))
-    //pubsub.subscribe('touchMove', this.touchMove.bind(this))
-    //pubsub.subscribe('touchEnd', this.touchEnd.bind(this))
 
-    //const { width, height } = this.props.renderer
-    //this.bg = this.addChild(new PIXI.Sprite(Bg.generateRadialGradient(width, height)))
     this.bg = this.addChild(new Bg({ renderer: this.props.renderer }))
-    //this.changeBgColor()
-
     this.init()
   }
 
@@ -66,16 +57,27 @@ export class Game extends PIXI.Container {
 
     // init game vars
     this.activeStar = false
+
+    this.blur = Effects.blur(this, 0)
+    //this.glow = Effects.glow(this, 10, 2, 2, 0xFFFFFF, 1)
   }
 
   gameStart() {
     this.state = GameStates.play
-    this.bg.setRandomColor()
+    //this.bg.setRandomColor()
   }
 
   gameOver() {
     this.state = GameStates.over
-    //this.bg.setRandomColor()
+    this.bg.setRandomColor()
+
+    this.removeChild(this.player)
+
+    this.explosion = this.addChild(new Explosion({
+      x: this.player.x,
+      y: this.player.y,
+      max: 32,
+    }))
   }
 
   onCollision(e, params) {
@@ -140,15 +142,8 @@ export class Game extends PIXI.Container {
   }
 
   render() {
-    if (this.state === GameStates.play) {
-
-    }
-
-    if (this.state === GameStates.over) {
-
-    }
-
-    //console.log('rendering game', this.keyboard.keys)
+    if (this.state === GameStates.play) {}
+    if (this.state === GameStates.over) {}
   }
 
   // debugLines() {

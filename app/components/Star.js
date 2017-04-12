@@ -1,15 +1,14 @@
 import pubsub from 'pubsub-js'
-import Effects from './Effects'
+import Effects from './lib/effects'
 import { StarStates } from './States'
 
 
 export class Star extends PIXI.Container {
   constructor(props) {
     super()
-    this.props = props
-
-    // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
+
+    this.props = props
 
     this.setSprite(24, 24)
     this.position.set(0, -20)

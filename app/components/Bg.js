@@ -1,17 +1,18 @@
 import pubsub from 'pubsub-js'
-import { randomInt } from './lib/random'
+import { generateRandomColor, colorInterpolation } from './lib/colors'
 
 
 export class Bg extends PIXI.Sprite {
   constructor(props) {
     super()
-
-    // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
 
     this.props = props
+
     this.texture = this.generateGradientRadial(400)
     this.setRandomColor()
+
+    this.speed = 20
   }
 
   generateGradientRadial(radius = 400) {
@@ -34,18 +35,16 @@ export class Bg extends PIXI.Sprite {
   }
 
   setRandomColor() {
-    const colors = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0x333333, 0xCCCCCC, 0x00FFFF, 0xFFFF00, 0xFF00FF]
-    this.color = colors[randomInt(0, colors.length - 1)]
+    this.color = generateRandomColor(this.color)
   }
 
   render() {
-    // interpolate towards new color
-    // TODO: we need to figure out how to extract r,g,b values of a color object 0x123456
-    const r = this.props.renderer
-    const d = this.color - r.backgroundColor
-    r.backgroundColor += d / 1 // this.color
+    this.props.renderer.backgroundColor += colorInterpolation(
+      this.props.renderer.backgroundColor,
+      this.color,
+      this.speed
+    )
   }
 }
-
 
 export default Bg

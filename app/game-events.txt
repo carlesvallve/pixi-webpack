@@ -1,4 +1,0 @@
-- kickoff
-- out
-- corner
-- goal

@@ -1,13 +1,12 @@
 import pubsub from 'pubsub-js'
-import Effects from './Effects'
+import Effects from './lib/effects'
 
 export class Trap extends PIXI.Container {
   constructor(props) {
     super()
-    this.props = props
-
-    // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
+
+    this.props = props
 
     const { x, y, w, h } = this.props
     this.setSprite(w, h)
