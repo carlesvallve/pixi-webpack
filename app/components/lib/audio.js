@@ -3,7 +3,7 @@ import { randomInt, randomNumber } from './random'
 // Settings
 //const { enabled, masterVolume } = Options.audio
 
-const enabled = false;
+const enabled = true;
 const masterVolume = 1;
 
 const Audio = {

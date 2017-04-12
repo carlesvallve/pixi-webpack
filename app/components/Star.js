@@ -39,12 +39,20 @@ export class Star extends PIXI.Container {
     this.state = StarStates.pickup
   }
 
+  unspawn() {
+    this.state = StarStates.unspawn
+  }
+
   render() {
     if (this.state === StarStates.spawn) {
       const dsx = (16 - this.sprite.width) / this.speed
       const dsy = (16 - this.sprite.height) / this.speed
       this.sprite.width += dsx
       this.sprite.height += dsy
+      //this.rotation += 360 / this.speed
+      if (dsx === 0) {
+        this.state = StarStates.idle
+      }
     }
 
     if (this.state === StarStates.pickup) {
@@ -52,6 +60,14 @@ export class Star extends PIXI.Container {
       this.y += dy
       this.sprite.rotation -= 0.1
       this.alpha -= 0.02
+    }
+
+    if (this.state === StarStates.unspawn) {
+      const dsx = (0 - this.sprite.width) / this.speed
+      const dsy = (0 - this.sprite.height) / this.speed
+      this.sprite.width += dsx
+      this.sprite.height += dsy
+      this.rotation += 0.1 //360 / this.speed
     }
   }
 }

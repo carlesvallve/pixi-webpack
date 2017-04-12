@@ -11,7 +11,7 @@ export class Tile extends PIXI.Container {
     pubsub.subscribe('render', this.render.bind(this))
 
     this.props = props
-    
+
     const { x, y, w, h } = this.props
     this.setSprite(w, h)
     this.position.set(x, y)
@@ -19,6 +19,7 @@ export class Tile extends PIXI.Container {
 
     this.trap = this.addChild(new Trap({ w: h / 4, h: h / 2 }))
     this.star = null
+    this.starTurns = 0
   }
 
   setSprite(w, h) {
@@ -38,6 +39,7 @@ export class Tile extends PIXI.Container {
   spawnStar() {
     window.setTimeout(() => {
       this.star = this.addChild(new Star({ tile: this, color: 0xFFFFFF }))
+      this.starTurns = 0
     }, 100)
   }
 
@@ -46,10 +48,22 @@ export class Tile extends PIXI.Container {
     window.setTimeout(() => {
       this.removeChild(this.star)
       this.star = null
+      this.starTurns = 0
     }, 2000)
   }
 
-  render() {}
+  unspawnStar() {
+    this.star.unspawn()
+    window.setTimeout(() => {
+      this.removeChild(this.star)
+      this.star = null
+      this.starTurns = 0
+    },500)
+  }
+
+  render() {
+
+  }
 }
 
 export default Tile

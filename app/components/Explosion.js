@@ -8,7 +8,7 @@ export class Explosion extends PIXI.Container {
 
     this.props = props
     this.zIndex = 3
-    this.gravity = 0.75
+    this.gravity = 0.5
 
     for (let i = 0; i < this.props.max; i++) {
       this.setSprite()
@@ -19,7 +19,7 @@ export class Explosion extends PIXI.Container {
     const graphics = new PIXI.Graphics()
     graphics.beginFill()
     //graphics.lineStyle(0, 0x000000, 1)
-    graphics.drawCircle(0, 0, 5)
+    graphics.drawCircle(0, 0, 6)
     graphics.endFill()
 
     const sprite = new PIXI.Sprite(graphics.generateTexture())
@@ -69,7 +69,7 @@ export class Explosion extends PIXI.Container {
       }
 
       // scale down
-      const lifeSpeed = randomNumber(0.98, 0.995)
+      const lifeSpeed = randomNumber(0.97, 0.99)
       sprite.scale.x *= lifeSpeed
       sprite.scale.y *= lifeSpeed
 

@@ -43,12 +43,14 @@ export class Trap extends PIXI.Container {
 
   open() {
     this.active = true
-    window.setTimeout(() => { this.targetY = 2 })
+    this.targetY = 2
+    //window.setTimeout(() => { this.targetY = 2 })
   }
 
   close() {
     this.active = false
-    window.setTimeout(() => { this.targetY = this.props.h })
+    this.targetY = this.props.h
+    //window.setTimeout(() => { this.targetY = this.props.h })
   }
 
   render() {

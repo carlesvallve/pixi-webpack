@@ -14,7 +14,7 @@ export class Player extends PIXI.Container {
 
     loadPlayerAssets((res) => {
       this.assets = res
-      this.init()
+      this.init(this.props.x, this.props.y)
     })
   }
 
@@ -67,15 +67,14 @@ export class Player extends PIXI.Container {
     this.addChild(this.sprite)
   }
 
-
-
   setRandomImage() {
     this.sprite.texture = PIXI.Texture.fromImage(this.getRandomId())
   }
 
   keyDown(e, key) {
-    if (this.state === PlayerStates.idle) {
-      this.state = PlayerStates.play
+    if (this.state === PlayerStates.dead) {
+      this.state = PlayerStates.idle
+      this.visible = true
       pubsub.publish('gamestart', {})
       return
     }
@@ -89,6 +88,7 @@ export class Player extends PIXI.Container {
   touchStart(e, params) {
     if (this.state === PlayerStates.idle) {
       this.state = PlayerStates.play
+      this.visible = true
       pubsub.publish('gamestart', {})
       return
     }
@@ -118,9 +118,21 @@ export class Player extends PIXI.Container {
     Audio.play(sfx.flesh, 0.5, [0.75, 1.25], false)
     Audio.play(sfx.squish2, 0.75, [0.5, 1.25], false)
     this.state = PlayerStates.dead
-    pubsub.publish('gameover', {})
+    this.visible = false
+    pubsub.publish('explosion', { x: this.x, y: this.y })
 
-    
+    window.setTimeout(() => {
+      this.state = PlayerStates.idle
+      this.position.set(this.props.x, this.props.y)
+      this.vx = 0
+      this.vy = 0
+      this.visible = true
+      this.sprite.rotation = 0
+      this.trackNum = 1
+      this.setRandomImage()
+      pubsub.publish('gameover', {})
+    }, 250)
+
   }
 
   onCollision(e, params) {
@@ -128,14 +140,11 @@ export class Player extends PIXI.Container {
   }
 
   render() {
-    if (this.state === PlayerStates.idle) {
+    if (this.state === PlayerStates.idle ||
+        this.state === PlayerStates.dead) {
       return
     }
 
-    if (this.state === PlayerStates.dead) {
-
-      return
-    }
 
     // update horizontal movement depending on track
     const w = this.props.trackW
