@@ -14,8 +14,9 @@ export const PlayerStates = {
 export const TileStates = {
   idle: 0,
   bounce: 1,
-  start: 2,
-  end: 3
+  rotate: 2,
+  start: 3,
+  end: 4
 }
 
 export const StarStates = {

@@ -37,7 +37,7 @@ const meter = new FPSMeter({
 function animate() {
     pubsub.publish('render', { /* pass any params you wish */ })
 
-    stage.updateLayersOrder()
+    //stage.updateLayersOrder()
     renderer.render(stage)
 
     PIXI.tweenManager.update()

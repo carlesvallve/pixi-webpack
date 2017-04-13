@@ -41,15 +41,6 @@ export class App extends PIXI.Container {
     this.bg.setRandomColor()
     this.label.visible = true
   }
-
-
-  updateLayersOrder() {
-    this.children.sort(function(a,b) {
-        a.zIndex = a.zIndex || 0;
-        b.zIndex = b.zIndex || 0;
-        return b.zIndex - a.zIndex
-    })
-  }
 }
 
 export default App

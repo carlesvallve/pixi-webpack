@@ -53,7 +53,7 @@ export class Game extends PIXI.Container {
       y: this.props.renderer.height * 0.3,
       w: 32,
       h: 32,
-      floorY: y,
+      floorY: y - h / 2,
       trackW: w + m
     }))
 
@@ -121,16 +121,16 @@ export class Game extends PIXI.Container {
     if (this.state === GameStates.over) { return }
 
     const tile = this.tiles[params.trackNum]
-    //params.player.x = tile.x;
+    params.player.x = tile.x;
 
     // pick stars
-    if (tile.star !== null && tile.star.isPickable()) {
+    if (tile.star !== null && tile.hasActiveStar()) {
       params.player.pickStar(tile)
       this.activeStar = null
     }
 
     // die on traps
-    if (tile.trap.active) {
+    if (tile.hasActiveTrap()) {
       params.player.x = tile.x;
       params.player.die()
       this.state = GameStates.over
@@ -145,39 +145,56 @@ export class Game extends PIXI.Container {
 
   updateTiles() {
     // a tile has 50% chance to change state
-    let closedTiles = []
+    let openTraps = []
+    let closedTraps = []
 
     for (let i = 0; i < this.tiles.length; i++) {
       const tile = this.tiles[i]
+
+      const r = randomInt(0, 100)
+      if (r <= 25) {
+        tile.rotate()
+      }
+
       if (tile.star === null) {
         const r = randomInt(1, 100)
-        if (r <= 50) { tile.trap.toggle() }
-        if (!tile.trap.active) {
-          closedTiles.push(tile)
+        if (r <= 75) {
+          tile.toggleTrap()
+        }
+        if (tile.trap.active) {
+          openTraps.push(tile)
+        } else {
+          closedTraps.push(tile)
         }
       }
     }
 
-    // but we want to make sure that there is always a closed trap
-    if (closedTiles.length === 0) {
+    // but we want to make sure that there is always a free tile
+    if (openTraps.length === 3) {
       const tile = this.tiles[randomInt(0, this.tiles.length - 1)]
-      tile.trap.close()
-      closedTiles.push(tile)
+      tile.closeTrap()
+
+      openTraps = openTraps.filter(e => e !== tile)
+      closedTraps.push(tile)
     }
 
-    //but we want to make sure that there is always an open trap
-    if (closedTiles.length === 3) {
-      const r = randomInt(0, this.tiles.length - 1)
-      const tile = this.tiles[r]
-      tile.trap.open()
-      closedTiles.slice(r, 1)
+    //but we want to make sure that there is always a deadly trap
+    if (openTraps.length === 0) {
+      let tile = this.tiles[randomInt(0, this.tiles.length - 1)]
+      while (tile.star !== null) {
+        tile = this.tiles[randomInt(0, this.tiles.length - 1)]
+      }
+      tile.openTrap()
+
+      openTraps.push(tile)
+      closedTraps = closedTraps.filter(e => e !== tile)
     }
 
     //there is a possibility that only one star appears on a closed tile
-    if (closedTiles.length > 0 && this.activeStar === null) {
+    if (closedTraps.length > 0 && this.activeStar === null) {
       const r = randomInt(1, 100)
-      if (r <= 25) {
-        const tile = closedTiles[randomInt(0, closedTiles.length - 1)]
+      if (r <= 75) {
+        const tile = closedTraps[randomInt(0, closedTraps.length - 1)]
         if (tile.star === null) {
           tile.spawnStar()
           this.activeStar = tile
@@ -196,8 +213,17 @@ export class Game extends PIXI.Container {
   }
 
   render() {
+    this.updateLayersOrder()
     if (this.state === GameStates.play) {}
     if (this.state === GameStates.over) {}
+  }
+
+  updateLayersOrder() {
+    this.children.sort(function(a,b) {
+        a.zIndex = a.zIndex || 0;
+        b.zIndex = b.zIndex || 0;
+        return a.zIndex - b.zIndex
+    })
   }
 }
 

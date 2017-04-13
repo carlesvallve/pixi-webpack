@@ -10,8 +10,8 @@ export class Star extends PIXI.Container {
 
     this.props = props
 
-    this.setSprite(24, 24)
-    this.position.set(0, -20)
+    this.setSprite(14, 14)
+    this.position.set(0, -30)
     this.speed = 5
     this.zIndex = 1
 
@@ -27,7 +27,7 @@ export class Star extends PIXI.Container {
     this.sprite.scale.set(0, 0)
     this.sprite.tint = this.props.color
 
-    this.glow = Effects.glow(this, 10, 2, 2, 0xFFFFFF, 1)
+    this.glow = Effects.glow(this, 8, 1.5, 0, 0xFFFFFF, 1)
     this.addChild(this.sprite)
   }
 
@@ -45,8 +45,8 @@ export class Star extends PIXI.Container {
 
   render() {
     if (this.state === StarStates.spawn) {
-      const dsx = (16 - this.sprite.width) / this.speed
-      const dsy = (16 - this.sprite.height) / this.speed
+      const dsx = (14 - this.sprite.width) / this.speed
+      const dsy = (14 - this.sprite.height) / this.speed
       this.sprite.width += dsx
       this.sprite.height += dsy
       //this.rotation += 360 / this.speed
@@ -56,7 +56,7 @@ export class Star extends PIXI.Container {
     }
 
     if (this.state === StarStates.pickup) {
-      const dy = (-200 - this.y) / 20 //this.speed
+      const dy = (150 - this.y) / 20 //this.speed
       this.y += dy
       this.sprite.rotation -= 0.1
       this.alpha -= 0.02

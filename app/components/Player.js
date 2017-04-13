@@ -72,8 +72,8 @@ export class Player extends PIXI.Container {
   }
 
   keyDown(e, key) {
-    if (this.state === PlayerStates.dead) {
-      this.state = PlayerStates.idle
+    if (this.state === PlayerStates.idle) {
+      this.state = PlayerStates.play
       this.visible = true
       pubsub.publish('gamestart', {})
       return
@@ -115,8 +115,8 @@ export class Player extends PIXI.Container {
   }
 
   die() {
-    Audio.play(sfx.flesh, 0.5, [0.75, 1.25], false)
-    Audio.play(sfx.squish2, 0.75, [0.5, 1.25], false)
+    Audio.play(sfx.flesh, 0.5, [0.5, 1.0], false)
+    Audio.play(sfx.squish2, 0.5, [0.5, 1.0], false)
     this.state = PlayerStates.dead
     this.visible = false
     pubsub.publish('explosion', { x: this.x, y: this.y })
@@ -149,7 +149,7 @@ export class Player extends PIXI.Container {
     // update horizontal movement depending on track
     const w = this.props.trackW
     const x = this.centerX - w + this.trackNum * w
-    this.vx = (x - this.x) / 3
+    this.vx = (x - this.x) / 5
 
     // add gravity to velocity on y axis
     this.vy += this.gravity;
