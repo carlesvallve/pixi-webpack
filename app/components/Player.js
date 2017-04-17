@@ -165,7 +165,11 @@ export class Player extends PIXI.Container {
     if (this.y + this.vy >= floorY) {
       this.y = floorY
       this.vy = this.impulse * -this.gravity
-      pubsub.publish('collision', { player: this, trackNum: this.trackNum })
+
+      if (this.impulse !== 0) {
+        pubsub.publish('collision', { player: this, trackNum: this.trackNum })
+      }
+
     } else {
       // update rotation
       this.sprite.rotation -= 0.1

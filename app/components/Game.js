@@ -62,7 +62,7 @@ export class Game extends PIXI.Container {
     // init game vars
     this.activeStar = null
 
-    this.blur = Effects.blur(this, 0)
+    //this.blur = Effects.blur(this, 0)
     //this.glow = Effects.glow(this, 10, 2, 2, 0xFFFFFF, 1)
   }
 

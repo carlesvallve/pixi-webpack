@@ -119,6 +119,8 @@ export class Tile extends PIXI.Container {
 
   unspawnStar() {
     const star = this.star
+    if (this.star === null) { return }
+
     const pos = { x: star.worldTransform.tx, y: star.worldTransform.ty }
     star.setParent(this.parent)
     star.position.set(pos.x, pos.y)
