@@ -46,7 +46,6 @@ export class Player extends PIXI.Container {
     this.centerY = y
 
     // initialize gravity and velocity
-    this.gravityIncreaseFactor = 1.1
     this.gravity = 0.75
     this.impulse = 26
     this.vx = 0
@@ -181,12 +180,9 @@ export class Player extends PIXI.Container {
     const floorY = this.props.floorY - this.props.h / 2
     if (this.y + this.vy >= floorY) {
       this.y = floorY
-      this.vy = 0 //-this.impulse * -this.gravity
+      this.vy = this.impulse * -this.gravity
 
       // increase gravity each time we bounce
-      this.gravity *= this.gravityIncreaseFactor
-      //this.impulse *= this.gravityIncreaseFactor
-      console.log(this.gravity)
 
       if (this.impulse !== 0) {
         pubsub.publish('collision', { player: this, trackNum: this.trackNum })
