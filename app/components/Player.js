@@ -6,6 +6,9 @@ import Audio from './lib/audio'
 import Effects from './lib/effects'
 import Explosion from './Explosion'
 
+//import SVGGraphics from 'pixi-svg-graphics'
+//var SVGGraphics = require('pixi-svg-graphics')
+
 
 export class Player extends PIXI.Container {
   constructor(props) {
@@ -24,7 +27,7 @@ export class Player extends PIXI.Container {
   }
 
   init() {
-    const id = this.getRandomId()
+    const id = 'bitbucket' //this.getRandomId()
 
     // subscribe to game events
     pubsub.subscribe('render', this.render.bind(this))
@@ -43,24 +46,39 @@ export class Player extends PIXI.Container {
     this.centerY = y
 
     // initialize gravity and velocity
-    this.gravity = 0.75 // 0.5 // 1
-    this.impulse = 26 //28 // 20
+    this.gravityIncreaseFactor = 1.1
+    this.gravity = 0.75
+    this.impulse = 26
     this.vx = 0
-    this.vy = 0 //(Math.random() * +10) + 5
+    this.vy = 0
 
     // initialize game vars
-    //this.playing = false
     this.trackNum = 1
     this.state = PlayerStates.idle
   }
 
   setSprite(id, w, h) {
+    //var graphics = new PIXI.Graphics()
+    //PIXI.SVGGraphics.drawSVG(graphics, svg)
+    //const texture = graphics.generateTexture()
+
+    // var canvas = document.createElement('canvas')
+    // canvas.width = w
+    // canvas.height = h
+    // canvas.getContext('2d').drawImage(svgImage, 0, 0, canvas.width, canvas.height)
+    //
+    // const texture = new PIXI.Texture(new PIXI.BaseTexture (canvas))
+
+    console.log(texture)
+
     const texture = PIXI.Texture.fromImage(id)
     this.sprite = new PIXI.Sprite(texture)
     this.sprite.anchor.set(0.5, 0.5)
-    this.sprite.width = w
-    this.sprite.height = h
+    //this.sprite.width = w
+    //this.sprite.height = h
     this.sprite.tint = this.props.color
+
+
 
     //this.blur = Effects.blur(this.sprite, 1.5)
     //this.glow = Effects.glow(this.sprite, 10, 2, 2, 0xFF0000, 1)
@@ -111,7 +129,7 @@ export class Player extends PIXI.Container {
   pickStar(tile) {
     Audio.play(sfx.dingEcho, 1, [2, 2], false)
     tile.pickStar()
-    this.setRandomImage()
+    //this.setRandomImage()
   }
 
   die() {
@@ -145,7 +163,6 @@ export class Player extends PIXI.Container {
       return
     }
 
-
     // update horizontal movement depending on track
     const w = this.props.trackW
     const x = this.centerX - w + this.trackNum * w
@@ -164,7 +181,12 @@ export class Player extends PIXI.Container {
     const floorY = this.props.floorY - this.props.h / 2
     if (this.y + this.vy >= floorY) {
       this.y = floorY
-      this.vy = this.impulse * -this.gravity
+      this.vy = 0 //-this.impulse * -this.gravity
+
+      // increase gravity each time we bounce
+      this.gravity *= this.gravityIncreaseFactor
+      //this.impulse *= this.gravityIncreaseFactor
+      console.log(this.gravity)
 
       if (this.impulse !== 0) {
         pubsub.publish('collision', { player: this, trackNum: this.trackNum })

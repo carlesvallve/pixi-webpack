@@ -19,7 +19,7 @@ export class Star extends PIXI.Container {
   }
 
   setSprite(w, h) {
-    const texture = PIXI.Texture.fromImage('macys')
+    const texture = PIXI.Texture.fromImage('star')
     this.sprite = new PIXI.Sprite(texture)
     this.sprite.anchor.set(0.5, 0.5)
     this.sprite.width = w

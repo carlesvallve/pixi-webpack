@@ -23,9 +23,7 @@ export class LabelScore extends PIXI.Sprite {
         dropShadowColor: 0x000000,
         fill: 0xFFFFFF,
         fontFamily: 'Helvetica',
-        fontSize: 48,
-        //stroke: 0x000000,
-        //strokeThickness: 2
+        fontSize: 48
       })
     )
 

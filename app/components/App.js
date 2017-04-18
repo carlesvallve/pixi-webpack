@@ -41,7 +41,6 @@ export class App extends PIXI.Container {
   gameStart() {
     this.labelStart.hide()
     this.score = 0
-    //this.labelScore.set(this.score.toString())
   }
 
   gameOver() {
@@ -50,6 +49,7 @@ export class App extends PIXI.Container {
   }
 
   onCollision(e, params) {
+    // update score
     this.score += 1
     this.labelScore.set(this.score.toString())
   }

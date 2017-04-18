@@ -74,20 +74,35 @@ export class Tile extends PIXI.Container {
 
   resetRotation(chance = 50) {
     const r = randomInt(0, 100)
-    if (r > chance) { return }
-    this.startAngle = 0
-    this.endAngle = 0
-    this.rotation = 0
+    if (r > chance) {
+      rotate()
+    } else {
+      this.startAngle = 0
+      this.endAngle = 0
+      this.rotation = 0
+    }
+
   }
 
 
   openTrap() {
-    if (this.hasActiveTrap() && this.endAngle !== 0) {
-      this.rotate()
-      return
+
+    // if (this.hasActiveTrap() && this.startAngle !== 0) {
+    //   this.rotate()
+    //   return
+    // }
+
+    if (this.trap.isActive() && this.isRotated()) {
+      resetRotation()
     }
+    // if (!this.hasActiveTrap()) {
+    //   this.startAngle = 0
+    //   this.endAngle = 0
+    //   this.rotation = 0
+    // }
 
     //this.resetRotation(50)
+    //this.resetRotation(0)
 
     this.trap.open()
   }

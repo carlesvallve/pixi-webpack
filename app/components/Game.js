@@ -7,7 +7,6 @@ import { randomInt }  from './lib/random'
 
 import { GameStates } from'./States'
 
-//import Bg from './Bg'
 import Tile from './Tile'
 import Player from './Player'
 import Explosion from './Explosion'
@@ -17,8 +16,6 @@ export class Game extends PIXI.Container {
   constructor(props) {
     super()
     pubsub.subscribe('render', this.render.bind(this))
-    //pubsub.subscribe('keyDown', this.keyDown.bind(this))
-    //pubsub.subscribe('touchStart', this.touchStart.bind(this))
     pubsub.subscribe('gamestart', this.gameStart.bind(this))
     pubsub.subscribe('gameover', this.gameOver.bind(this))
     pubsub.subscribe('collision', this.onCollision.bind(this))
@@ -66,18 +63,6 @@ export class Game extends PIXI.Container {
     //this.glow = Effects.glow(this, 10, 2, 2, 0xFFFFFF, 1)
   }
 
-  // keyDown() {
-  //   if (this.state === GameStates.over) {
-  //     pubsub.publish('gamestart', {})
-  //   }
-  // }
-  //
-  // touchStart(e, params) {
-  //   console.log(this.state)
-  //   if (this.state === GameStates.over) {
-  //     pubsub.publish('gamestart', {})
-  //   }
-  // }
 
   onExplosion(e, params) {
     // create explosion
@@ -93,15 +78,10 @@ export class Game extends PIXI.Container {
       this.removeChild(this.explosion)
     }
     this.state = GameStates.play
-    //this.bg.setRandomColor()
   }
 
   gameOver() {
     this.state = GameStates.over
-    //this.bg.setRandomColor()
-
-    //this.removeChild(this.player)
-    //this.player.visible = false
 
     // close all traps
     for (let i = 0; i < this.tiles.length; i++) {
@@ -141,6 +121,12 @@ export class Game extends PIXI.Container {
     window.setTimeout(() => {
       this.updateTiles()
     })
+  }
+
+  updateTiles2() {
+    // so, we need to decide a config for the three tiles. it should always have 1 or 2 tiles with traps pointing up, and 0 or 1 tile with a star pointing up.
+    // throw a dice: 50% -> 1 trap / 2 traps
+
   }
 
   updateTiles() {

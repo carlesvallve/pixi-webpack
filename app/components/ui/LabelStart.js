@@ -19,9 +19,7 @@ export class LabelStart extends PIXI.Container {
         dropShadowColor: 0x000000,
         fill: 0xFFFFFF,
         fontFamily: 'Helvetica',
-        fontSize: 14,
-        //stroke: 0x000000,
-        //strokeThickness: 2
+        fontSize: 14
       })
     )
 

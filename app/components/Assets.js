@@ -16,6 +16,13 @@ export const sfx =  {
 
 export const loadPlayerAssets = (cb) => {
   const loader = PIXI.loader
+  loader.add('bitbucket', '/assets/img/game/png/bitbucket.png')
+        .add('star', '/assets/img/game/png/star.png')
+  loader.load((loader, res) => { cb(res) })
+}
+
+export const loadPlayerAssets2 = (cb) => {
+  const loader = PIXI.loader
 
   loader.add('air',         '/assets/img/game/svg/air.svg')
         .add('macys',       '/assets/img/game/svg/macys.svg')
