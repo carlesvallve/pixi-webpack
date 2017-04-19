@@ -1,56 +1,59 @@
+const audioPath = './assets/audio/game/'
+const imgPath = './assets/img/game/'
+
 export const sfx =  {
-  wind: PIXI.sound.Sound.from('/assets/audio/game/windy.wav'),
-  drop: PIXI.sound.Sound.from('/assets/audio/game/drop.wav'),
-  ding: PIXI.sound.Sound.from('/assets/audio/game/ding.wav'),
-  huh: PIXI.sound.Sound.from('/assets/audio/game/huh.wav'),
-  kick: PIXI.sound.Sound.from('/assets/audio/game/kick.wav'),
-  alien: PIXI.sound.Sound.from('/assets/audio/game/kickalien.wav'),
-  tennis: PIXI.sound.Sound.from('/assets/audio/game/tennis.wav'),
-  bass: PIXI.sound.Sound.from('/assets/audio/game/bass.wav'),
-  woosh: PIXI.sound.Sound.from('/assets/audio/game/woosh.wav'),
-  squish: PIXI.sound.Sound.from('/assets/audio/game/squish.wav'),
-  squish2: PIXI.sound.Sound.from('/assets/audio/game/squish2.wav'),
-  flesh: PIXI.sound.Sound.from('/assets/audio/game/flesh.wav'),
-  dingEcho: PIXI.sound.Sound.from('/assets/audio/game/ding-echo.wav'),
+  wind: PIXI.sound.Sound.from(audioPath + 'windy.wav'),
+  drop: PIXI.sound.Sound.from(audioPath + 'drop.wav'),
+  ding: PIXI.sound.Sound.from(audioPath + 'ding.wav'),
+  huh: PIXI.sound.Sound.from(audioPath + 'huh.wav'),
+  kick: PIXI.sound.Sound.from(audioPath + 'kick.wav'),
+  alien: PIXI.sound.Sound.from(audioPath + 'kickalien.wav'),
+  tennis: PIXI.sound.Sound.from(audioPath + 'tennis.wav'),
+  bass: PIXI.sound.Sound.from(audioPath + 'bass.wav'),
+  woosh: PIXI.sound.Sound.from(audioPath + 'woosh.wav'),
+  squish: PIXI.sound.Sound.from(audioPath + 'squish.wav'),
+  squish2: PIXI.sound.Sound.from(audioPath + 'squish2.wav'),
+  flesh: PIXI.sound.Sound.from(audioPath + 'flesh.wav'),
+  dingEcho: PIXI.sound.Sound.from(audioPath + 'ding-echo.wav'),
 }
 
 export const loadPlayerAssets = (cb) => {
   const loader = PIXI.loader
-  loader.add('bitbucket', '/assets/img/game/png/bitbucket.png')
-        .add('star', '/assets/img/game/png/star.png')
+  loader.add('bitbucket', imgPath + 'png/bitbucket.png')
+        .add('star',      imgPath + 'png/star.png')
   loader.load((loader, res) => { cb(res) })
 }
 
 export const loadPlayerAssets2 = (cb) => {
   const loader = PIXI.loader
 
-  loader.add('air',         '/assets/img/game/svg/air.svg')
-        .add('macys',       '/assets/img/game/svg/macys.svg')
-        .add('matternet',   '/assets/img/game/svg/matternet.svg')
-        .add('android',     '/assets/img/game/svg/android.svg')
-        .add('apple',       '/assets/img/game/svg/apple.svg')
-        .add('asana',       '/assets/img/game/svg/asana.svg')
-        .add('baidu',       '/assets/img/game/svg/baidu.svg')
-        .add('bigcartel',   '/assets/img/game/svg/bigcartel.svg')
-        .add('bitbucket',   '/assets/img/game/svg/bitbucket.svg')
-        .add('codio',         '/assets/img/game/svg/codio.svg')
-        .add('diaspora',         '/assets/img/game/svg/diaspora.svg')
-        .add('drupal',         '/assets/img/game/svg/drupal.svg')
-        .add('ethereum',         '/assets/img/game/svg/ethereum.svg')
-        .add('gitlab',         '/assets/img/game/svg/gitlab.svg')
-        .add('googledrive',         '/assets/img/game/svg/googledrive.svg')
-        .add('gratipay',         '/assets/img/game/svg/gratipay.svg')
-        .add('hipchat',         '/assets/img/game/svg/hipchat.svg')
-        .add('json',         '/assets/img/game/svg/json.svg')
-        .add('launchpad',         '/assets/img/game/svg/launchpad.svg')
-        .add('moo',         '/assets/img/game/svg/moo.svg')
-        .add('protoio',         '/assets/img/game/svg/protoio.svg')
-        .add('react',         '/assets/img/game/svg/react.svg')
-        .add('sentiayoga',         '/assets/img/game/svg/sentiayoga.svg')
-        .add('tinder',         '/assets/img/game/svg/tinder.svg')
-        .add('twitch',         '/assets/img/game/svg/twitch.svg')
-        .add('twoo',         '/assets/img/game/svg/twoo.svg')
-        .add('ubuntu',         '/assets/img/game/svg/ubuntu.svg')
+  loader.add('air',         imgPath + 'svg/air.svg')
+        .add('macys',       imgPath + 'svg/macys.svg')
+        .add('matternet',   imgPath + 'svg/matternet.svg')
+        .add('android',     imgPath + 'svg/android.svg')
+        .add('apple',       imgPath + 'svg/apple.svg')
+        .add('asana',       imgPath + 'svg/asana.svg')
+        .add('baidu',       imgPath + 'svg/baidu.svg')
+        .add('bigcartel',   imgPath + 'svg/bigcartel.svg')
+        .add('bitbucket',   imgPath + 'svg/bitbucket.svg')
+        .add('codio',       imgPath + 'svg/codio.svg')
+        .add('diaspora',    imgPath + 'svg/diaspora.svg')
+        .add('drupal',      imgPath + 'svg/drupal.svg')
+        .add('ethereum',    imgPath + 'svg/ethereum.svg')
+        .add('gitlab',      imgPath + 'svg/gitlab.svg')
+        .add('googledrive', imgPath + 'svg/googledrive.svg')
+        .add('gratipay',    imgPath + 'svg/gratipay.svg')
+        .add('hipchat',     imgPath + 'svg/hipchat.svg')
+        .add('json',        imgPath + 'svg/json.svg')
+        .add('launchpad',   imgPath + 'svg/launchpad.svg')
+        .add('moo',         imgPath + 'svg/moo.svg')
+        .add('protoio',     imgPath + 'svg/protoio.svg')
+        .add('react',       imgPath + 'svg/react.svg')
+        .add('sentiayoga',  imgPath + 'svg/sentiayoga.svg')
+        .add('tinder',      imgPath + 'svg/tinder.svg')
+        .add('twitch',      imgPath + 'svg/twitch.svg')
+        .add('twoo',        imgPath + 'svg/twoo.svg')
+        .add('ubuntu',      imgPath + 'svg/ubuntu.svg')
 
     loader.load((loader, res) => {
       cb(res)

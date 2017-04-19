@@ -123,9 +123,21 @@ export class Game extends PIXI.Container {
     })
   }
 
+  getActiveTraps() {
+    let activeTraps = []
+    for (let i = 0; i < this.tiles.length; i++) {
+      const tile = this.tiles[i]
+      activeTraps[i] = tile.hasActiveTrap()
+    }
+
+    return activeTraps
+  }
+
   updateTiles2() {
     // so, we need to decide a config for the three tiles. it should always have 1 or 2 tiles with traps pointing up, and 0 or 1 tile with a star pointing up.
     // throw a dice: 50% -> 1 trap / 2 traps
+
+    const activeTraps = this.getActiveTraps()
 
   }
 

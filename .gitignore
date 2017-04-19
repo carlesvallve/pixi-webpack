@@ -4,6 +4,7 @@ node_modules
 build/bundle.js.map
 build/bundle.js
 build/styles.css
+build/*.zip
 
 build/assets/lite/json/lang/en.js
 npm-debug.log
