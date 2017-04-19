@@ -127,7 +127,7 @@ export class Game extends PIXI.Container {
     let activeTraps = []
     for (let i = 0; i < this.tiles.length; i++) {
       const tile = this.tiles[i]
-      activeTraps[i] = tile.hasActiveTrap()
+      activeTraps[i] = tile.hasActiveTrap() ? tile : null
     }
 
     return activeTraps
@@ -138,6 +138,8 @@ export class Game extends PIXI.Container {
     // throw a dice: 50% -> 1 trap / 2 traps
 
     const activeTraps = this.getActiveTraps()
+
+
 
   }
 
@@ -208,6 +210,15 @@ export class Game extends PIXI.Container {
         this.activeStar = null
       }
     }
+
+    // debug active traps
+    const activeTraps = this.getActiveTraps()
+    activeTraps.map(tile => {
+      console.log(tile)
+      if (tile !== null) {
+        tile.paintRed()
+      }
+    })
   }
 
   render() {

@@ -19,6 +19,8 @@ export class Tile extends PIXI.Container {
     this.position.set(x, y)
     this.zOrder = 1
 
+    this.paintRed()
+
     this.trap = this.addChild(new Trap({ w: h / 4, h: h / 2 }))
     this.star = null
     this.starTurns = 0
@@ -30,18 +32,27 @@ export class Tile extends PIXI.Container {
     this.state = TileStates.idle
   }
 
-  setSprite(w, h) {
+  drawTexture(w, h) {
     // Draw a rectangle with rounded corners
     this.graphics = new PIXI.Graphics()
     this.graphics.beginFill(0x000000)
     this.graphics.drawRoundedRect(-w/2, -h/2, w, h, 10)
     this.graphics.endFill()
 
-    var texture = this.graphics.generateTexture()
-    this.sprite = new PIXI.Sprite(texture)
-    this.sprite.anchor.set(0.5, 0.5)
+    return this.graphics.generateTexture()
+  }
 
-    this.addChild(this.sprite)
+  setSprite(w, h) {
+
+    const sprite = new PIXI.Sprite(this.drawTexture(w, h, 0x000000))
+    sprite.anchor.set(0.5, 0.5)
+
+    this.sprite = this.addChild(sprite)
+  }
+
+  paintRed() {
+    this.sprite.texture = this.drawTexture(this.props.w, this.props.h, 0xFF0000)
+    console.log(this.sprite.texture)
   }
 
   hasActiveTrap() {
